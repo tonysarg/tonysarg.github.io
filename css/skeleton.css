@@ -460,6 +460,10 @@ h6 { font-size: 1.0rem; line-height: 1.6;  letter-spacing: 0; }
     color: rgba(255, 255, 255, .9);
 }
 
+.darkmode--activated hero__nav-link hero__nav-link--active w-inline-block w--current {
+    color: rgba(0, 0, 0, .9);
+}
+
 .hero__nav-link {
     margin-right: 0px;
     margin-left: 0px;
@@ -506,6 +510,17 @@ h6 { font-size: 1.0rem; line-height: 1.6;  letter-spacing: 0; }
     font-weight: 400;
     text-decoration: none;
 }
+
+.darkmode--activated .hero__nav-link {
+    margin-right: 0px;
+    margin-left: 0px;
+    padding: 12px 16px;
+    color: rgba(255, 255, 255, .2);
+    font-weight: 400;
+    text-decoration: none;
+}
+
+
 .w-inline-block {
     max-width: 100%;
     display: inline-block;
@@ -630,6 +645,7 @@ a:focus {
 
 .darkmode--activated .portfolioFilter a {
       color: #666;
+      border: 1px solid #666;
 }
     
 
