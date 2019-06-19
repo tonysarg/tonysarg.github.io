@@ -364,7 +364,7 @@ h6 { font-size: 1.0rem; line-height: 1.6;  letter-spacing: 0; }
     font-weight: 400;
   }
 
-.darkmode--activated .hero__h2 {
+.darkmode--activated .hero__-h2 {
         color: rgba(255, 255, 255, .6);
 }
 
@@ -372,7 +372,7 @@ h6 { font-size: 1.0rem; line-height: 1.6;  letter-spacing: 0; }
         color: rgba(0, 0, 0, .6);
   }
 
-.darkmode--activated .hero__h2 a {
+.darkmode--activated .hero__-h2 a {
         color: rgba(255, 255, 255, .6);
 }
 
