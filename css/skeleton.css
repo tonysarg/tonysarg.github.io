@@ -332,7 +332,7 @@ body {
     width: 96px;
     height: 96px;
     margin: 0px auto 24px auto;
-    background: url(../images/tonysarg-logo-black.svg);
+    background: url("../images/tonysarg-logo-black.svg");
     background-repeat: no-repeat;
 }
 
