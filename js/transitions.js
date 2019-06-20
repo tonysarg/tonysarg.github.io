@@ -16,14 +16,14 @@ $(".hero__nav a").on("click", function (event) {
 	$.ajax({
 		url: href,
 		success: function (data) {
-			$(".container").fadeOut(250, function () {
-				const newPage = $(data).filter(".container").html()
+			$(".main").fadeOut(250, function () {
+				const newPage = $(data).filter(".main").html()
         
-        $(".container").html(newPage)
+        		$(".main").html(newPage)
 
 
 
-				$(".container").fadeIn(250)
+				$(".main").fadeIn(250)
 			})
 		}
 	})
