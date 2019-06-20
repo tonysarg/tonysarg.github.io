@@ -1,5 +1,7 @@
 $(".hero__nav a").on("click", function (event) {
 
+	event.preventDefault()
+
 	const href = $(this).attr('href')
 
 	window.history.pushState(null, null, href)
@@ -9,7 +11,7 @@ $(".hero__nav a").on("click", function (event) {
 
 $(document).ready(function(){
     $(".work").click(function(){
-        $(".main").load("index.html .main1");
+        $(".main").load("index.html .main2");
     });
 });
 
@@ -21,6 +23,6 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     $(".about").click(function(){
-        $(".main").load("about.html .main3");
+        $(".main").load("about.html .main2");
     });
 });
