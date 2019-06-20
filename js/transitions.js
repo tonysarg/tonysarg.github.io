@@ -17,9 +17,9 @@ $(".hero__nav a").on("click", function (event) {
 		url: href,
 		success: function (data) {
 			$(".container").fadeOut(250, function () {
-				const newPage = $(data).filter("section").html()
+				const newPage = $(data).filter(".container").html()
         
-        $("container").html(newPage)
+        $(".container").html(newPage)
 
 
 
