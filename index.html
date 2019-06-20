@@ -26,12 +26,22 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
- <script type="text/javascript" src="js/js.js"></script>
+<script type="text/javascript" src="js/js.js"></script>
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="images/favicon.png">
+  
+  <!-- Navigation Hide/Show
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("p").toggle();
+  });
+});
+</script>
 </head>
 <body>
 
@@ -45,13 +55,13 @@
     <div class="hero__-h2 hero__h2--mobile"></div><a href="#" class="email">tonyksarg@gmail.com</a>
     <h3 class="hero__email-link">tonyksarg@gmail.com</h3>
     <div class="hero__nav">
-        <a href="/" class="hero__nav-link hero__nav-link--active w-inline-block w--current">
+        <a href="work.html" class="hero__nav-link hero__nav-link--active w-inline-block w--current">
             <div>Work</div>
         </a>
-        <a href="/resume" class="hero__nav-link w-inline-block">
+        <a href="resume.html" class="hero__nav-link w-inline-block">
             <div>Resume</div>
         </a>
-        <a href="/about" class="hero__nav-link w-inline-block">
+        <a href="about.html" class="hero__nav-link w-inline-block">
             <div>About</div>
         </a>
     </div>
@@ -145,6 +155,7 @@
   new Darkmode().showWidget();
 </script>
 	
+ <script src="js/transitions.js"></script> 
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 </body>
