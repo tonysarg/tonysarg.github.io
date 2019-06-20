@@ -176,7 +176,7 @@ body {
 
 
 body {
-    animation: myfadeInAnimation 2s;
+    animation: myfadeInAnimation 0.5s;
 }
 
 @keyframe myfadeInAnimation {
