@@ -10,12 +10,6 @@ $(".hero__nav a").on("click", function (event) {
 
 
 $(document).ready(function(){
-    $(".work").click(function(){
-        $("html").load("index.html");
-    });
-});
-
-$(document).ready(function(){
     $(".resume").click(function(){
         $(".main").load("resume.html .main");
     });
