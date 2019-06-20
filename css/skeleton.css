@@ -63,7 +63,9 @@
 /* Grid
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 w-50 {
-.width: 50%;}
+.width: 50%;
+margin: 0 auto;
+}
 
 .container {
   position: relative;
