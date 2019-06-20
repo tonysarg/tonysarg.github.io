@@ -12,7 +12,7 @@ $(document).on("click", ".work", function () {
     }
 
     // now, fadeout the html (whole page)
-    $("html").fadeOut(function () {
+    $("html").fadeOut(500,function () {
         // when the animation is complete, set the new location
         location = newUrl;
     });
