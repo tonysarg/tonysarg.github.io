@@ -331,12 +331,13 @@ body {
 .hero__profile-pic {
     width: 96px;
     height: 96px;
-    margin: 16px auto;
-    background: url("images/tonysarg-logo-black.svg");
+    margin: 0px auto 24px auto;
+    background: url(../images/tonysarg-logo-black.svg);
+    background-repeat: no-repeat;
 }
 
 .darkmode--activated .hero__profile-pic {
-    background: url("images/tonysarg-logo-white.svg");
+    background: url("../images/tonysarg-logo-white.svg");
 }
 
 h1, h2, h3, h4, h5, h6 {
