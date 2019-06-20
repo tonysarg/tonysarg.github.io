@@ -1,3 +1,4 @@
+$('document').on('load', function() {
 $(".hero__nav a").on("click", function (event) {
 
 	event.preventDefault()
@@ -29,4 +30,5 @@ $(".hero__nav a").on("click", function (event) {
 	})
 
 
+})
 })
