@@ -10,7 +10,7 @@ $(".hero__nav a").on("click", function (event) {
 	$(".hero__nav a").removeClass("hero__nav-link--active")
 	$(".hero__nav a").removeClass("w--current")
 	$(this).addClass("hero__nav-link--active")
-	$(this).addClass("w--current"
+	$(this).addClass("w--current")
 });
 
 
