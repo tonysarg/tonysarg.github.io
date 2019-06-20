@@ -225,6 +225,8 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 50%;
+  margin: 0 auto;
 }
 #toolbar {
   display: flex;

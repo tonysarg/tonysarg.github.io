@@ -29,7 +29,7 @@ $(window).on('load', function(){
 
 (function() {
   let currentPageIndex = 0;
-  let pageMode = 1;
+  let pageMode = 0;
   let cursorIndex = Math.floor(currentPageIndex / pageMode);
   let pdfInstance = null;
   let totalPagesCount = 0;
