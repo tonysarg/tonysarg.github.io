@@ -10,19 +10,13 @@ $(".hero__nav a").on("click", function (event) {
 
 
 $(document).ready(function(){
-    $(".work").click(function(){
-        $(".main").load("index.html .main2");
-    });
-});
-
-$(document).ready(function(){
     $(".resume").click(function(){
-        $(".main").load("resume.html .main2");
+        $(".main").load("resume.html .main");
     });
 });
 
 $(document).ready(function(){
     $(".about").click(function(){
-        $(".main").load("about.html .main2");
+        $(".main").load("about.html .main");
     });
 });
