@@ -1,4 +1,4 @@
-$(document).ready(function() {
+function loadImage() {
     var $container = $('.portfolioContainer');
     $container.isotope({
         filter: '*',
