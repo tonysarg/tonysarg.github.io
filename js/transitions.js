@@ -8,6 +8,11 @@ $(".hero__nav a").on("click", function (event) {
 
 });
 
+$(document).ready(function(){
+    $(".work").click(function(){
+        $(".main").load("work.html .main");
+    });
+});
 
 $(document).ready(function(){
     $(".resume").click(function(){
