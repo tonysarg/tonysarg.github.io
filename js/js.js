@@ -1,4 +1,4 @@
-function loadImage() {
+function loadScript() {
     var $container = $('.portfolioContainer');
     $container.isotope({
         filter: '*',
