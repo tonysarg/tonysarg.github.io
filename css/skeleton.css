@@ -34,6 +34,7 @@
 
       .tab-content.hide{
         position: absolute;
+        left: -999em;
         opacity: 0;
                 transition: opacity 0s linear;
       }
@@ -177,7 +178,9 @@ margin: 0 auto;
 html is set to 62.5% so that all the REM measurements throughout Skeleton
 are based on 16px sizing. So basically 1.4rem = 24px :) */
 html {
-  font-size: 16px; }
+  font-size: 16px;
+  overflow: auto;
+  }
 body {
   background: #f9fafc;
   font-size: 1rem; /* currently ems cause chrome bug misinterpreting rems on body element */
