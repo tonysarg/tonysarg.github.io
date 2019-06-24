@@ -1,6 +1,10 @@
 /* * Skeleton V2.0.4 * Copyright 2014, Dave Gamache * www.getskeleton.com * Free to use under the MIT license. * http://www.opensource.org/licenses/mit-license.php * 12/29/2014 */
 /* Table of contents –––––––––––––––––––––––––––––––––––––––––––––––––– - Grid - Base Styles - Typography - Links - Buttons - Forms - Lists - Code - Tables - Spacing - Utilities - Clearing - Media Queries */
 /* resume */
+.resume {
+      overflow: hidden;
+}
+
  @import url(https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,400italic,500,500italic,700italic,700,900);
  @import url(https://fonts.googleapis.com/css?family=IBM+Plex+Sans:100,200,300,400,500,700,900);
  .onequarter {
