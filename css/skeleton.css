@@ -24,7 +24,19 @@
 - Clearing
 - Media Queries
 */
+/* hide show */
 
+      .tab-content.active{
+        position: static;
+        opacity: 1;
+                transition: opacity 1s linear;
+      }
+
+      .tab-content.hide{
+        position: absolute;
+        opacity: 0;
+                transition: opacity 0s linear;
+      }
 
 /* Hero */
 .hero__container {
