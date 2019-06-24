@@ -4,27 +4,28 @@
  @import url(https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,400italic,500,500italic,700italic,700,900);
  @import url(https://fonts.googleapis.com/css?family=IBM+Plex+Sans:100,200,300,400,500,700,900);
  .onequarter {
-     -ms-flex: 0 0 25%;
-     flex: 0 0 25%;
-     max-width: 25%;
+     -ms-flex: 0 0 35%;
+    flex: 0 0 35%;
+    max-width: 35%;
 }
  .threequarter {
      -ms-flex: 0 0 75%;
      flex: 0 0 75%;
      max-width: 50%;
+     margin-left: 48px;
 }
 
 .flexrow {
   display: flex;
-  padding: 0 10% 0 10%;
+  padding: 0 20% 0 20%;
+       margin-left: 32px;
 }
 
 
 @media  (max-width: 1450px) {
-.onequarter {
-  flex: 0 0 55%;
-    max-width: 45%;
-}
+  .flexrow {
+    padding: 0 10% 0 10%;
+  }
 }
 
 @media  (max-width: 900px) {
@@ -39,21 +40,21 @@
   flex: 0 0 100%;
     max-width: 100%;
 }
+.onequarter .black {
+    width: 150%;
+    height: 300px;
+    padding: 48px 24px 0px 50%;
+    left: -50%;
+  }
 .threequarter {
       flex: 0 0 100%;
     max-width: 100%;
-}
-.onequarter .black {
-    width: 120%;
-    height: 300px;
-    padding: 48px 24px 0px 48px;
-    left: -50px;
+    margin-left: 0;
 }
 .contact {
   width: 150px;
 }
 }
-
 
  .black {
      position: relative;
