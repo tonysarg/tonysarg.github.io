@@ -24,6 +24,101 @@
 - Clearing
 - Media Queries
 */
+/* resume */
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,400italic,500,500italic,700italic,700,900);
+@import url(https://fonts.googleapis.com/css?family=IBM+Plex+Sans:100,200,300,400,500,700,900);
+.onequarter {
+  -ms-flex: 0 0 25%;
+  flex: 0 0 25%;
+  max-width: 25%;
+}
+
+.threequarter {
+  -ms-flex: 0 0 75%;
+  flex: 0 0 75%;
+  max-width: 75%;
+}
+
+.black {
+  position: relative;
+  background: black;
+  width: 180px;
+  height: 400px;
+  left: 36px;
+  color: white;
+  padding: 48px 24px 0px 36px;
+}
+
+h1,
+.title,
+.location,
+.contact {
+  font-family: "Roboto", 'Helvetica Neue, Helvetica, Arial', Sans-Serif;
+}
+
+.black h1 {
+  font-size: 36px;
+  font-weight: 200;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-weight: 400;
+}
+
+.location {
+  font-size: 11px;
+  font-weight: 300;
+}
+
+.contact {
+  margin-top: 40px;
+  font-size: 11px;
+}
+
+.contact ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contact ul li {
+  margin-top: 8px;
+  line-height: 1.2em;
+}
+
+.p {
+  font-family: "IBM Plex Sans", 'Helvetica Neue, Helvetica, Arial', Sans-Serif;
+}
+
+.section-title {
+  margin-top: 48px;
+  letter-spacing: .2em;
+  margin-bottom: 24px;
+}
+
+.dates {
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.company {
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.responsibilities ul {
+padding: 0 0 0 16px;
+}
+
+.responsibilities ul li {
+  margin-top: 8px;
+  line-height: 1.4em;
+}
+
+
+
+
 /* hide show */
 
       .tab-content.active{
