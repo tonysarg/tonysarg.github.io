@@ -1,10 +1,22 @@
 /* * Skeleton V2.0.4 * Copyright 2014, Dave Gamache * www.getskeleton.com * Free to use under the MIT license. * http://www.opensource.org/licenses/mit-license.php * 12/29/2014 */
 /* Table of contents –––––––––––––––––––––––––––––––––––––––––––––––––– - Grid - Base Styles - Typography - Links - Buttons - Forms - Lists - Code - Tables - Spacing - Utilities - Clearing - Media Queries */
+
+html{
+    font-family:sans-serif;
+    -ms-text-size-adjust:100%;
+    -webkit-text-size-adjust:100%;
+    height:100%
+}
+article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{
+    display:block
+}
+
+
 /* resume */
 #resume {
       overflow: hidden;
 }
-
+ @import url('https://fonts.googleapis.com/css?family=Chivo&display=swap');
  @import url(https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,400italic,500,500italic,700italic,700,900);
  @import url(https://fonts.googleapis.com/css?family=IBM+Plex+Sans:100,200,300,400,500,700,900);
  .onequarter {
@@ -71,7 +83,7 @@
 }
 
  h1, .title, .location, .contact {
-     font-family: "Roboto", 'Helvetica Neue, Helvetica, Arial', Sans-Serif;
+     font-family: "Chivo", 'Helvetica Neue, Helvetica, Arial', Sans-Serif;
 }
  .black h1 {
      font-size: 36px;
@@ -99,7 +111,7 @@
      line-height: 1.2em;
 }
  .p {
-     font-family: "IBM Plex Sans", 'Helvetica Neue, Helvetica, Arial', Sans-Serif;
+     font-family: "Chivo", 'Helvetica Neue, Helvetica, Arial', Sans-Serif;
 }
  .section-title {
      margin-top: 48px;
@@ -371,60 +383,6 @@
 /* Typography –––––––––––––––––––––––––––––––––––––––––––––––––– */
 /* Font */
  @font-face {
-     font-family: 'Apercu';
-     src: url('../fonts/Apercu-Italic.woff2') format('woff2'), url('../fonts/Apercu-Italic.woff') format('woff');
-     font-weight: normal;
-     font-style: italic;
-}
- @font-face {
-     font-family: 'Apercu';
-     src: url('../fonts/Apercu-BoldItalic.woff2') format('woff2'), url('../fonts/Apercu-BoldItalic.woff') format('woff');
-     font-weight: bold;
-     font-style: italic;
-}
- @font-face {
-     font-family: 'Apercu';
-     src: url('../fonts/Apercu-Regular.woff2') format('woff2'), url('../fonts/Apercu-Regular.woff') format('woff');
-     font-weight: normal;
-     font-style: normal;
-}
- @font-face {
-     font-family: 'Apercu';
-     src: url('../fonts/Apercu-LightItalic.woff2') format('woff2'), url('../fonts/Apercu-LightItalic.woff') format('woff');
-     font-weight: 300;
-     font-style: italic;
-}
- @font-face {
-     font-family: 'Apercu';
-     src: url('../fonts/Apercu-Medium.woff2') format('woff2'), url('../fonts/Apercu-Medium.woff') format('woff');
-     font-weight: 500;
-     font-style: normal;
-}
- @font-face {
-     font-family: 'Apercu Mono';
-     src: url('../fonts/Apercu-Mono.woff2') format('woff2'), url('../fonts/Apercu-Mono.woff') format('woff');
-     font-weight: normal;
-     font-style: normal;
-}
- @font-face {
-     font-family: 'Apercu';
-     src: url('../fonts/Apercu-Light.woff2') format('woff2'), url('../fonts/Apercu-Light.woff') format('woff');
-     font-weight: 300;
-     font-style: normal;
-}
- @font-face {
-     font-family: 'Apercu';
-     src: url('../fonts/Apercu-Bold.woff2') format('woff2'), url('../fonts/Apercu-Bold.woff') format('woff');
-     font-weight: bold;
-     font-style: normal;
-}
- @font-face {
-     font-family: 'Apercu';
-     src: url('../fonts/Apercu-MediumItalic.woff2') format('woff2'), url('../fonts/Apercu-MediumItalic.woff') format('woff');
-     font-weight: 500;
-     font-style: italic;
-}
- @font-face {
      font-family: 'Souvenir';
      src: url('../fonts/SouvenirStd-MediumItalic.woff2') format('woff2'), url('../fonts/SouvenirStd-MediumItalic.woff') format('woff');
      font-weight: 500;
@@ -546,7 +504,7 @@
  .hero__-h2 {
      margin-top: 0px;
      margin-bottom: 60px;
-     font-family: "Apercu", sans-serif;
+     font-family: "Chivo", sans-serif;
      color: rgba(0, 0, 0, .6);
      font-size: 19px;
      line-height: 26px;
@@ -584,7 +542,7 @@
      -webkit-flex: 1;
      -ms-flex: 1;
      flex: 1;
-     font-family: "Apercu", sans-serif;
+     font-family: "Chivo", sans-serif;
      color: rgba(0, 0, 0, .6);
      font-size: 16px;
      line-height: 32px;
@@ -595,7 +553,7 @@
      display: none;
      margin-top: 12px;
      margin-bottom: 16px;
-     font-family: "Apercu", sans-serif;
+     font-family: "Chivo", sans-serif;
      color: rgba(0, 0, 0, .3);
      font-size: 16px;
      line-height: 24px;
@@ -619,7 +577,7 @@
      -webkit-justify-content: center;
      -ms-flex-pack: center;
      justify-content: center;
-     font-family: "Apercu", sans-serif;
+     font-family: "Chivo", sans-serif;
      color: rgba(0, 0, 0, .6);
      font-size: 18px;
      font-weight: 500;
