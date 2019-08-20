@@ -13,6 +13,104 @@ article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,secti
 
 /* Fonts */
 @font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-MediumItalic.woff2') format('woff2'),
+        url('OperatorSSm-MediumItalic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-BoldItalic.woff2') format('woff2'),
+        url('OperatorSSm-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-Bold.woff2') format('woff2'),
+        url('OperatorSSm-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-BookItalic.woff2') format('woff2'),
+        url('OperatorSSm-BookItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-XLightItalic.woff2') format('woff2'),
+        url('OperatorSSm-XLightItalic.woff') format('woff');
+    font-weight: 200;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-Book.woff2') format('woff2'),
+        url('OperatorSSm-Book.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-LightItalic.woff2') format('woff2'),
+        url('OperatorSSm-LightItalic.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-BlackItalic.woff2') format('woff2'),
+        url('OperatorSSm-BlackItalic.woff') format('woff');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-Medium.woff2') format('woff2'),
+        url('OperatorSSm-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-XLight.woff2') format('woff2'),
+        url('OperatorSSm-XLight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-Black.woff2') format('woff2'),
+        url('OperatorSSm-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Operator SSm';
+    src: url('OperatorSSm-Light.woff2') format('woff2'),
+        url('OperatorSSm-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+
+
+
+@font-face {
     font-family: 'Operator Mono Lig';
     src: url('OperatorMonoLig-BookItalic.woff2') format('woff2'),
         url('OperatorMonoLig-BookItalic.woff') format('woff');
