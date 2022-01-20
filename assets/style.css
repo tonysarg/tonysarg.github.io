@@ -757,6 +757,10 @@ header {
     height: 4rem;
 }
 
+img.footer__social-image {
+    filter: invert(100%);
+}
+
 .footer__github-buttons {
     display: flex;
     justify-content: center;
