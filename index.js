@@ -1,5 +1,5 @@
 /* -----------------------------------------
-  Have focus outline only for keyboard users 
+  Have focus outline only for keyboard users
  ---------------------------------------- */
 
 const handleFirstTab = (e) => {
@@ -47,7 +47,7 @@ window.addEventListener("scroll", () => {
 
 ScrollTrigger.create({
   trigger: "#work",
-  start: "top 50%+=100px",
+  start: "top 50%+=-400px",
   end: 99999,
   toggleClass: {className: 'nav--scrolled', targets: '.nav'}
 });
