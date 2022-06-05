@@ -5,6 +5,7 @@
     --text-color: #ccc;
     --fg-session: #81d0b8;
     --fg-break: #a33945;
+    --fg-pause: #d5a334;
 }
 
 body {
@@ -83,16 +84,16 @@ body {
 }
 
 .btn-green:hover {
-    background-color: #232;
+    background-color: #121;
 }
 
 .btn-yellow {
     color: #CC6;
-    border: 2px solid #CC6;
+    border: 2px solid var(--fg-pause);
 }
 
 .btn-yellow:hover {
-    background-color: #332;
+    background-color: #16160f;
 }
 
 .btn-red {
@@ -101,7 +102,7 @@ body {
 }
 
 .btn-red:hover {
-    background-color: #322;
+    background-color: #1d1313;
 }
 
 .btn-mute {
@@ -130,7 +131,7 @@ label {
     text-indent: -9999px;
     width: 52px;
     height: 27px;
-    background: #1ba80e;
+    background: var(--fg-session);
     border-radius: 100px;
     position: absolute;
 }
@@ -151,7 +152,7 @@ label:after {
 
 input:checked+label {
     /* conditional check while toggling */
-    background: var(--color-heading);
+    background: #ccc;
 }
 
 input:checked+label:after {
