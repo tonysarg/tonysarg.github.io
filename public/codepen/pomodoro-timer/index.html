@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    New Tab
+  </title>
+
+  <meta name="description" content="Simple new tab page with clock, pomodoro timer, and weather">
+  <meta name="keywords" content="clock, pomodoro timer, weather" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" integrity="sha512-xX2rYBFJSj86W54Fyv1de80DWBq7zYLn2z0I9bIhQG+rxIF6XVJUpdGnsNHWRa6AvP89vtFupEPDP8eZAtu9qA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+<div class="container">
+    <div class="header">
+        <div id="time"></div>
+    </div>
+
+    <div class="controls">
+        <div class="control-knobs">
+            <div class="knob">
+                <h5>Session Length</h5>
+                <input type="text" value="25" size="5" id="session-knob" />
+            </div>
+            <div class="knob">
+                <h5>Break Length</h5>
+                <input type="text" value="5" size="5" id="break-knob" />
+            </div>
+        </div>
+
+        <div class="control-buttons">
+            <a id="cmd-reset" class="btn btn-red"><i class="fa fa-undo"></i> Reset</a>
+            <a id="cmd-pause" class="btn btn-yellow hidden"><i class="fa fa-pause"></i> Pause</a>
+            <a id="cmd-go" class="btn btn-green"><i class="fa fa-play"></i> Start</a>
+        </div>
+        <div class="buttons-mute">
+            <a id="cmd-mute" class="btn btn-mute"><i class="fa fa-volume-up"></i></a>
+            <a id="cmd-unmute" class="btn btn-mute hidden"><i class="fa fa-volume-off"></i></a>
+        </div>
+    </div>
+
+    <div class="timer">
+        <input type="text" value="1500" size="5" id="timer-display" />
+    </div>
+
+    <audio id="alarm" preload="auto">
+        <source src="http://tonyksarg.com/public/codepen/pomodoro-timer/alarmsound.mp3" />
+    </audio>
+
+    <div id="weather">
+        <div id="weather-icon"></div>
+        <div class="weather-info">
+            <div id="city"></div>
+            <div id="status"></div>
+            <div id="temperature"></div>
+        </div>
+    </div>
+</div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js"></script>
+<script src="index.js"></script>
+</body>
+</html>
