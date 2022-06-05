@@ -88,7 +88,7 @@ body {
 }
 
 .btn-yellow {
-    color: #CC6;
+    color: var(--fg-pause);
     border: 2px solid var(--fg-pause);
 }
 
