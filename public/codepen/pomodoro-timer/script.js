@@ -203,6 +203,9 @@ document.querySelectorAll("*").forEach((element) =>
 );
 });
 
+const key = "6733562bc4333f87a61b05b7b631f97b";
+
+
 // get local weather
 $(document).ready(function () {
 if (navigator.geolocation) {
@@ -210,11 +213,14 @@ if (navigator.geolocation) {
     var latitude = position.coords.latitude;
     var longitude = position.coords.longitude;
 
+
     var api =
-        "https://fcc-weather-api.glitch.me/api/current?lat=" +
+        "https://api.openweathermap.org/data/3.0/onecall?lat=" +
         latitude +
         "&lon=" +
-        longitude;
+        longitude +
+        "&appid=" +
+        key ;
 
     $.getJSON(api, function (data) {
         var conversion = data.main.temp * 1.8 + 32;
