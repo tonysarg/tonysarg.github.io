@@ -43,8 +43,8 @@ function setupTimerDisplay() {
     value = $("#session-knob").val() * 60;
     $("#timer-display").val(value);
     config.max = value;
-    config.fgColor = "#81d084";
-    config.inputColor = "#81d084";
+    config.fgColor = "#81d0b8";
+    config.inputColor = "#81d0b8";
     config.format = function (v) {
         let sec = parseInt(v);
         let min = Math.floor(sec / 60);
@@ -54,8 +54,8 @@ function setupTimerDisplay() {
     } else {
     let max = $("#break-knob").val() * 60;
     config.max = max;
-    config.fgColor = "#e14556";
-    config.inputColor = "#e14556";
+    config.fgColor = "#a33945";
+    config.inputColor = "#a33945";
     config.format = function (v) {
         let sec = parseInt(v);
         sec = max - sec;
@@ -78,7 +78,7 @@ if (jQuery().knob) {
     step: 1,
     width: 100,
     height: 100,
-    fgColor: "#81d084",
+    fgColor: "#81d0b8",
     bgColor: "#333",
     release: function () {
         if (reset) {
@@ -94,7 +94,7 @@ if (jQuery().knob) {
     step: 1,
     width: 100,
     height: 100,
-    fgColor: "#e14556",
+    fgColor: "#a33945",
     bgColor: "#333"
     });
 
