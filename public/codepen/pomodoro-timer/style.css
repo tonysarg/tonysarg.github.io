@@ -1,10 +1,10 @@
 /* major elements */
 
 :root {
-    --background-color: #111;
+    --background-color: #000;
     --text-color: #ccc;
-    --fg-session: #81d084;
-    --fg-break: #e14556;
+    --fg-session: #81d0b8;
+    --fg-break: #a33945;
 }
 
 body {
