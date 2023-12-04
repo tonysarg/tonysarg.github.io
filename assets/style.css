@@ -98,6 +98,8 @@ body {
     overflow-x: hidden;
     transition: background .4s;
     will-change: background;
+    margin: 0;
+    padding: 0;
 }
 
 body.body--scrolled {
