@@ -49,7 +49,7 @@ ScrollTrigger.create({
   trigger: "#work",
   start: "top 50%+=-400px",
   end: 99999,
-  toggleClass: {className: 'nav--scrolled', targets: '.nav'}
+  toggleClass: {className: 'nav--scrolled', targets: '.header__nav'}
 });
 
 ScrollTrigger.create({
@@ -69,7 +69,7 @@ ScrollTrigger.create({
 
 
 const hamburger = document.querySelector(".hamburger");
-const navMenu = document.querySelector(".nav__menu");
+const navMenu = document.querySelector(".header__menu");
 
 hamburger.addEventListener("click", mobileMenu);
 
@@ -78,7 +78,7 @@ function mobileMenu() {
     navMenu.classList.toggle("active");
 }
 
-const navLink = document.querySelectorAll(".nav__link");
+const navLink = document.querySelectorAll(".header__menu-link");
 
 navLink.forEach(n => n.addEventListener("click", closeMenu));
 
