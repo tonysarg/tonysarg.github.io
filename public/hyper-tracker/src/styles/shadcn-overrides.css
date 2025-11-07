@@ -1,0 +1,13 @@
+@reference "tailwindcss";
+
+@layer components {
+  [data-slot="select-content"] [data-slot="select-item"][data-highlighted] {
+    @apply bg-[rgb(var(--accent-rgb))] text-[rgb(var(--ink))];
+  }
+  [data-slot="select-content"] [data-slot="select-item"][data-state="checked"] {
+    @apply bg-[rgb(var(--accent-rgb))/70] text-white font-semibold;
+  }
+  [data-slot="select-item-indicator"] {
+    @apply text-[rgb(var(--ink))];
+  }
+}

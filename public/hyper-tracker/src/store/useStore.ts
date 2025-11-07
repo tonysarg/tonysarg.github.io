@@ -1,4 +1,3 @@
-// src/store/useStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -30,9 +29,14 @@ export type ProgEntry = {
 
 type S = {
   plan: Day[];
-  progress: Record<string, Record<string, ProgEntry>>; // keyed by exercise.id
+  progress: Record<string, Record<string, ProgEntry>>; // progress[dayKey][exerciseId]
   restOverrides: Record<string, Record<string, number>>;
   muted: boolean;
+
+  // global rest state
+  restActive: boolean;
+  restOwner: string | null;
+  setRestActive: (active: boolean, owner?: string | null) => void;
 
   // plan ops
   setPlan: (p: Day[]) => void;
@@ -44,12 +48,14 @@ type S = {
   // rest override
   setRestOverride: (dayKey: string, exId: string, sec: number) => void;
 
-  // global
+  // global mute
   setMuted: (m: boolean) => void;
 
-  // full-state import/export
+  // import/export helpers
   replaceProgress: (p: S["progress"]) => void;
   replaceRestOverrides: (r: S["restOverrides"]) => void;
+
+  // reset sets only (keep notes, video, weight/reps/history)
   resetDaySets: (dayKey: string) => void;
 };
 
@@ -60,6 +66,12 @@ export const useStore = create<S>()(
       progress: {},
       restOverrides: {},
       muted: false,
+
+      // rest state
+      restActive: false,
+      restOwner: null,
+      setRestActive: (active, owner = null) =>
+        set({ restActive: active, restOwner: active ? owner : null }),
 
       setPlan: (p) => set({ plan: p }),
 
@@ -100,6 +112,7 @@ export const useStore = create<S>()(
       replaceProgress: (p) => set({ progress: p ?? {} }),
       replaceRestOverrides: (r) => set({ restOverrides: r ?? {} }),
 
+      // 🔁 reset only the boolean "sets" maps for a given day; keep notes/video/history/etc.
       resetDaySets: (dayKey) => {
         const progress = structuredClone(get().progress);
         if (progress[dayKey]) {

@@ -1,0 +1,13 @@
+.drag-handle { cursor: grab; opacity: .85; }
+.drag-shadow { box-shadow: 0 12px 28px rgba(0,0,0,.45); }
+.dragging     { opacity: .3; }
+.placeholder  { border: 2px dashed rgba(233,233,233,.25); border-radius: .6rem; height: 3.25rem; }
+
+#theme-fab { position: fixed; right: 14px; bottom: 14px; opacity: .15; transition: opacity .15s; z-index: 60; }
+#theme-fab:hover { opacity: .8; }
+
+[data-radix-drag-overlay],
+[class*="DragOverlay"] {
+  z-index: 9999 !important;
+}
+body[data-dnd-dragging="true"] { cursor: grabbing !important; }
