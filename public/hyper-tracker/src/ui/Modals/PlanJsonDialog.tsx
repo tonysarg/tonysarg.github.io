@@ -123,7 +123,7 @@ export default function PlanJsonDialog() {
         <Textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="h-72 font-mono bg-soil/80 text-sand border-white/10 placeholder:text-slate-400"
+          className="h-72 font-mono bg-soil/80 text-sand border-white/10 placeholder:text-[rgb(var(--ink)/0.5)]"
           spellCheck={false}
         />
 

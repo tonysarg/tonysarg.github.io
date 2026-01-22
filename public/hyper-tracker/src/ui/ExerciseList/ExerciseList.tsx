@@ -123,9 +123,9 @@ function Row({
     <div
       ref={setNodeRef}
       style={style}
-      className={`w-full glass rounded-lg p-3 ${
+      className={`w-full glass rounded-md p-3 ${
         active
-          ? "ring-2 ring-[rgb(var(--accent))]"
+          ? "ring-2 ring-[rgb(var(--accent-rgb))]"
           : "hover:bg-white/5"
       } ${isDragging ? "opacity-50" : ""}`}
       onClick={onClick}
@@ -186,7 +186,7 @@ function RowInner({
 }) {
   return (
     <div
-      className={`w-full glass rounded-lg p-3 ${
+      className={`w-full rounded-md p-3 ${
         ghost ? "shadow-xl bg-soil text-sand" : ""
       }`}
     >
@@ -201,7 +201,7 @@ function RowInner({
           </button>
           <div>
             <div className="font-medium">{ex.name}</div>
-            <div className="text-xs text-slate-300/80">
+            <div className="text-xs text-subtle">
               {ex.sets || ""}
             </div>
           </div>
@@ -210,8 +210,8 @@ function RowInner({
           <span
             className={`pill ${
               doneCount === total && total > 0
-                ? "bg-[rgb(var(--accent))] text-[rgb(var(--ink))]"
-                : "bg-slate-700"
+                ? "bg-[rgb(var(--accent-rgb))] text-[rgb(var(--ink))]"
+                : "bg-[rgb(var(--card-rgb))]"
             }`}
           >
             {total ? `${doneCount}/${total}` : "—"}

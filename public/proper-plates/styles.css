@@ -1,137 +1,333 @@
+/* ========================================================================
+   Proper Plates — Full site stylesheet (replacement)
+   - Light pastel "fit green mind / munchies" palette
+   - Desktop mega flyout + full-screen mobile menu
+   - Subtle left->right reveals
+   - Gallery, hero, cards, marquee, forms included
+   ======================================================================== */
 
-/* ============ Design Tokens ============ */
+/* =========================
+   Design tokens (global)
+   ========================= */
 :root{
-  --gold: #a47a0c;
-  --gold-2:#b18716;
-  --ink:  #141313;
-  --cream:#faf7f2;
-  --paper:#ffffff;
-  --line: #eadfce;
-  --muted:#5f5850;
-  --accent:#2f6f6f;
-  --radius: 16px;
-  --shadow: 0 10px 30px rgba(0,0,0,.08);
-  --shadow-sm: 0 6px 16px rgba(0,0,0,.06);
-}
+  /* Primary color system (pastel / warm) */
+  --pp-ink: #12302b;        /* deep teal / dark ink */
+  --pp-accent: #2f6f6f;     /* accent green */
+  --pp-gold: #efcfae;       /* pale gold / warm */
+  --pp-gold-2: #f3d8b1;
+  --pp-cream: #fdebd2;      /* page background */
+  --pp-paper: #fff7f2;      /* card / paper */
+  --pp-line: #efe0d1;       /* subtle divider */
+  --pp-muted: #6b6560;      /* muted text */
+  --pp-radius: 14px;
+  --pp-radius-lg: 18px;
+  --pp-shadow: 0 14px 36px rgba(18,48,43,.08);
+  --pp-shadow-sm: 0 6px 16px rgba(18,48,43,.06);
+  --pp-glass: rgba(255,247,242,.66);
 
-/* Dark mode (automatic, tasteful) */
-@media (prefers-color-scheme: dark){
-  :root{
-    --ink:#ececec;
-    --cream:#0f0e0c;
-    --paper:#161512;
-    --line:#2a241c;
-    --muted:#a9a39d;
-    --shadow: 0 10px 30px rgba(0,0,0,.5);
-    --shadow-sm: 0 6px 16px rgba(0,0,0,.45);
-  }
-}
-
-/* ============ Base ============ */
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, sans-serif;
-  color:var(--ink);
-  background:var(--cream);
-  line-height:1.5;
-  text-rendering:optimizeLegibility;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
-a{color:var(--accent);text-decoration:none}
-a:focus-visible, button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-img{max-width:100%;display:block;height:auto}
-.container{max-width:1120px;margin:0 auto;padding:0 1rem}
-
-/* Fluid type scale */
-:root{
+  /* typographic scale */
   --step--1: clamp(.88rem, .84rem + .2vw, .98rem);
   --step-0:  clamp(1rem, .96rem + .4vw, 1.125rem);
   --step-1:  clamp(1.25rem, 1.15rem + .9vw, 1.6rem);
   --step-2:  clamp(1.6rem,  1.35rem + 1.6vw, 2.2rem);
   --step-3:  clamp(2rem,   1.6rem + 2.6vw, 3rem);
+
+  --focus-outline: 3px solid rgba(47,111,111,.12);
 }
-body{font-size:var(--step-0)}
-h1{font-size:var(--step-3);line-height:1.05;margin:.2rem 0 1rem}
+
+
+
+/* =========================
+   Base
+   ========================= */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color:var(--pp-ink);
+  background:var(--pp-cream);
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  -webkit-text-size-adjust:100%;
+  -ms-text-size-adjust:100%;
+  font-size:var(--step-0);
+}
+a{color:var(--pp-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%;display:block;height:auto}
+.container{max-width:1120px;margin:0 auto;padding:0 1rem}
+
+/* fluid typographic helpers */
+h1{font-size:var(--step-3);line-height:1.05;margin:.2rem 0 1rem;font-family: 'Georgia', serif}
 h2{font-size:var(--step-2);margin:.2rem 0 1rem}
 h3{font-size:var(--step-1);margin:.2rem 0 .6rem}
-.lead{font-size:clamp(1.02rem, .98rem + .4vw, 1.2rem);color:var(--muted);max-width:72ch}
+.lead{font-size:clamp(1.02rem, .98rem + .4vw, 1.2rem);color:var(--pp-muted);max-width:72ch}
 
-/* ============ Progress bar ============ */
-.progress{position:fixed;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-2));transform-origin:0 50%;transform:scaleX(0);z-index:70}
+/* small accessible helpers */
+.sr-only{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
 
-/* ============ Header / Nav ============ */
-.site-header{position:sticky;top:0;z-index:60;background:color-mix(in srgb, var(--paper) 92%, transparent);backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.6rem 0}
-.brand{display:flex;align-items:center;gap:.6rem;font-weight:800;letter-spacing:.3px}
-.brand .logo{width:42px;height:42px;border-radius:10px;background:var(--gold);display:grid;place-items:center;color:#fff;font-size:1.2rem;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
-.brand span{font-size:1.1rem}
-.links{display:flex;align-items:center;gap:.2rem}
-.links a{padding:.45rem .6rem;border-radius:.6rem}
-.links a:hover{background:color-mix(in srgb, var(--gold) 12%, transparent)}
-.cta{background:var(--gold);color:#fff;padding:.55rem .9rem;border-radius:.8rem;font-weight:700;border:none;cursor:pointer}
-.cta:hover{background:var(--gold-2);color:#fff}
-
-/* Mobile nav */
-.menu-toggle{display:none;background:none;border:none;padding:.4rem;border-radius:.6rem}
-@media (max-width:860px){
-  .menu-toggle{display:inline-flex}
-  .links{position:fixed;inset:auto 0 0 0;background:var(--paper);flex-direction:column;align-items:flex-start;gap:.2rem;padding:.6rem 1rem 1rem;border-top:1px solid var(--line);transform:translateY(100%);transition:transform .3s ease;box-shadow:var(--shadow)}
-  .links[aria-expanded="true"]{transform:translateY(0)}
+/* =========================
+   Progress bar (top)
+   ========================= */
+.progress{
+  position:fixed;left:0;right:0;top:0;height:3px;
+  background:linear-gradient(90deg,var(--pp-gold),var(--pp-gold-2));
+  transform-origin:0 50%;transform:scaleX(0);z-index:200;
 }
 
-/* ============ Hero ============ */
-.hero{position:relative;overflow:hidden;background:linear-gradient(180deg, color-mix(in srgb, var(--gold) 12%, transparent), transparent)}
-.hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:2rem;align-items:center;padding:2.5rem 0}
-.badge{display:inline-block;background:var(--paper);border:1px solid var(--line);color:var(--gold-2);border-radius:999px;font-weight:700;padding:.35rem .7rem;margin-bottom:.6rem}
-.hero figure{border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+/* =========================
+   Header / Nav (desktop + mobile)
+   ========================= */
+/* use .site-header.v2 to opt in to new header style */
+.site-header{position:sticky;top:12px;z-index:120;padding:0.6rem 0;backdrop-filter: blur(6px) saturate(130%);background:linear-gradient(180deg, rgba(255,247,242,.95), rgba(255,247,242,.85));border-radius:18px; margin:0.6rem 1rem;border:1px solid var(--pp-line);box-shadow:var(--pp-shadow-sm)}
+.site-header .container{display:flex;align-items:center;gap:1rem;justify-content:space-between}
+
+/* brand */
+.brand{display:flex;align-items:center;gap:.9rem;text-decoration:none;color:var(--pp-ink)}
+.brand-mark{width:46px;height:46px;border-radius:10px;background:linear-gradient(180deg,#f7e8cf,#efe1c6);display:grid;place-items:center;font-weight:800;color:var(--pp-ink);box-shadow:var(--pp-shadow-sm);padding:.6rem}
+.brand-title{font-weight:800;font-size:1.05rem;color:var(--pp-ink);letter-spacing:.4px}
+
+/* main nav (desktop) */
+.desktop-nav{display:flex;align-items:center;gap:0.8rem}
+.nav-list{display:flex;align-items:center;gap:0.45rem;list-style:none;padding:0;margin:0}
+.nav-list a,.nav-trigger{
+  color:var(--pp-ink);
+  text-decoration:none;
+  padding:.48rem .6rem;
+  border-radius:10px;
+  font-weight:700;
+  background:transparent;
+  border:none;
+  cursor:pointer;
+}
+.nav-list a:hover,.nav-trigger:hover{background:color-mix(in srgb, var(--pp-gold) 12%, transparent)}
+.nav-actions{display:flex;align-items:center;gap:.6rem}
+.header-cta{background:var(--pp-ink);color:var(--pp-paper);padding:.55rem .9rem;border-radius:10px;font-weight:700;box-shadow:var(--pp-shadow-sm);border:none}
+
+/* hamburger for mobile */
+.menu-toggle{display:none;background:none;border:0;padding:.25rem;border-radius:8px;cursor:pointer}
+.hamburger{width:28px;height:2px;background:var(--pp-ink);position:relative;display:block}
+.hamburger::before,.hamburger::after{content:"";position:absolute;left:0;right:0;height:2px;background:var(--pp-ink)}
+.hamburger::before{top:-8px}
+.hamburger::after{bottom:-8px}
+
+/* desktop: center brand with nav left and actions right (responsive helpers) */
+.nav-left{display:flex;align-items:center;gap:1rem}
+.nav-right{display:flex;align-items:center;gap:1rem}
+
+/* =========================
+   Mega flyout (desktop)
+   ========================= */
+.mega-flyout{
+  position:absolute;left:0;right:0;top:100%;
+  padding:1.2rem 1rem;display:none;pointer-events:none;z-index:130;
+  transition:opacity .28s ease, transform .28s ease;
+  transform:translateY(6px);
+}
+.mega-flyout[aria-hidden="false"]{display:block;pointer-events:auto;opacity:1;transform:none}
+.mega-flyout .flyout-inner{
+  background:linear-gradient(180deg,var(--pp-paper),var(--pp-cream));
+  border-radius:12px;padding:1rem;border:1px solid var(--pp-line);
+  box-shadow:var(--pp-shadow);display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:stretch;
+}
+.flyout-left{padding:1rem}
+.flyout-title{font-size:.95rem;font-weight:700;color:var(--pp-muted);margin-bottom:.6rem}
+.flyout-links{list-style:none;padding:0;margin:0;display:grid;gap:.35rem}
+.flyout-links a{display:inline-block;color:var(--pp-ink);padding:.45rem .6rem;border-radius:10px}
+.flyout-right{display:flex;gap:0.8rem;align-items:stretch}
+.flyout-card{background:var(--pp-paper);border-radius:10px;overflow:hidden;border:1px solid var(--pp-line);box-shadow:var(--pp-shadow-sm);width:100%;display:flex;flex-direction:column;justify-content:space-between}
+.flyout-card img{width:100%;height:160px;object-fit:cover}
+.flyout-card h5{padding:.6rem .8rem;margin:0;font-size:.95rem;color:var(--pp-ink)}
+.small-link{display:inline-block;padding:.5rem .8rem;color:var(--pp-accent);font-weight:700}
+
+/* =========================
+   Mobile flyout (full screen menu)
+   ========================= */
+.mobile-flyout{
+  position:fixed;inset:0;background:linear-gradient(180deg, rgba(255,247,242,0.98), rgba(253,235,210,0.98));display:none;z-index:140;overflow:auto;padding:2rem;
+}
+.mobile-flyout[aria-hidden="false"]{display:block}
+.mobile-flyout-inner{max-width:520px;margin:0 auto}
+.mobile-flyout-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:1rem}
+.mobile-nav ul{list-style:none;padding:0;margin:0;display:grid;gap:1.1rem}
+.mobile-nav a{font-size:1.8rem;color:var(--pp-ink);text-decoration:none;font-weight:800;padding:.6rem;display:block}
+.mobile-search{margin-top:1.2rem}
+.mobile-search input{width:100%;padding:.85rem;border-radius:10px;border:1px solid var(--pp-line);background:var(--pp-paper)}
+
+/* =========================
+   Hero
+   ========================= */
+.hero{
+  position:relative;overflow:hidden;background:linear-gradient(180deg,color-mix(in srgb,var(--pp-gold) 8%, transparent),transparent);
+  padding:2.5rem 0;
+}
+.hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:2rem;align-items:center}
+.hero figure{border-radius:var(--pp-radius-lg);overflow:hidden;box-shadow:var(--pp-shadow);background:linear-gradient(180deg,var(--pp-paper),#fff)}
+.badge{display:inline-block;background:var(--pp-paper);border:1px solid var(--pp-line);color:var(--pp-gold-2);border-radius:999px;font-weight:700;padding:.35rem .7rem;margin-bottom:.6rem}
+
+/* responsive hero */
 @media (max-width:860px){.hero-inner{grid-template-columns:1fr}}
 
-/* ============ Sections ============ */
-.section{padding:clamp(2.5rem, 4vw, 4rem) 0;border-top:1px solid var(--line)}
+/* =========================
+   Sections / grid / cards
+   ========================= */
+.section{padding:clamp(2.5rem, 4vw, 4rem) 0;border-top:1px solid var(--pp-line)}
 .grid{display:grid;gap:1.25rem}
 .two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .three{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media (max-width:980px){.three{grid-template-columns:1fr 1fr}}
 @media (max-width:860px){.two{grid-template-columns:1fr}.three{grid-template-columns:1fr}}
 
-/* Cards */
-.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
+/* card */
+.card{background:var(--pp-paper);border:1px solid var(--pp-line);border-radius:var(--pp-radius);overflow:hidden;box-shadow:var(--pp-shadow-sm)}
 .card .body{padding:1rem 1.1rem}
-.pill{display:inline-flex;gap:.4rem;align-items:center;border-radius:999px;background:color-mix(in srgb, var(--gold) 12%, transparent);color:#5b4210;padding:.25rem .6rem;font-weight:700;font-size:.85rem}
+.pill{display:inline-flex;gap:.4rem;align-items:center;border-radius:999px;background:color-mix(in srgb, var(--pp-gold) 12%, transparent);color:#5b4210;padding:.25rem .6rem;font-weight:700;font-size:.85rem}
 
-/* Gallery */
+/* =========================
+   Gallery helpers
+   ========================= */
 .gallery{display:grid;grid-template-columns:repeat(12,1fr);gap:.8rem}
-.gallery img{border-radius:14px;box-shadow:var(--shadow-sm)}
+.gallery img{border-radius:14px;box-shadow:var(--pp-shadow-sm);width:100%;height:auto;object-fit:cover}
 .gallery .w8{grid-column:span 8}
 .gallery .w4{grid-column:span 4}
-@media (max-width:860px){.gallery{grid-template-columns:1fr}.gallery .w8,.gallery .w4{grid-column:span 1}}
+.gallery .w6{grid-column:span 6}
+.gallery .w3{grid-column:span 3}
+@media (max-width:860px){
+  .gallery{grid-template-columns:1fr}
+  .gallery .w8,.gallery .w6,.gallery .w4,.gallery .w3{grid-column:span 1}
+}
 
-/* Contact */
+/* small image helpers used in template */
+.figure-small{width:120px;height:120px;border-radius:10px;overflow:hidden}
+.figure-medium{height:180px}
+
+/* =========================
+   Contact / form / lists
+   ========================= */
 .contact{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-.contact .panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.1rem;box-shadow:var(--shadow-sm)}
+.contact .panel{background:var(--pp-paper);border:1px solid var(--pp-line);border-radius:var(--pp-radius);padding:1rem 1.1rem;box-shadow:var(--pp-shadow-sm)}
 .contact .list{display:grid;gap:.5rem}
 .contact .list a{display:flex;align-items:center;gap:.6rem;padding:.45rem .6rem;border-radius:.6rem}
-.contact .list a:hover{background:color-mix(in srgb, var(--gold) 12%, transparent)}
+.contact .list a:hover{background:color-mix(in srgb, var(--pp-gold) 12%, transparent)}
 .mail{font-weight:800}
-small.muted{color:var(--muted)}
+small.muted{color:var(--pp-muted)}
 @media (max-width:860px){.contact{grid-template-columns:1fr}}
 
-/* Footer */
-footer{padding:2rem 0;border-top:1px solid var(--line);color:var(--muted)}
+/* =========================
+   Footer
+   ========================= */
+footer{padding:2rem 0;border-top:1px solid var(--pp-line);color:var(--pp-muted);background:transparent}
 
-/* ============ Motion (respect reduced motion) ============ */
+/* =========================
+   Marquee (subtle)
+   ========================= */
+.marquee-section{padding:.9rem 0;border-top:1px solid var(--pp-line);border-bottom:1px solid var(--pp-line);background:transparent}
+.marquee{display:flex;gap:1rem;white-space:nowrap;animation:marq 18s linear infinite}
+.marquee span{display:inline-block;padding:.35rem .9rem;border-radius:999px;font-weight:800;background:color-mix(in srgb,var(--pp-gold) 14%, transparent);color:var(--pp-ink)}
+@keyframes marq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* =========================
+   Reveal animations - subtle left->right
+   ========================= */
 @media (prefers-reduced-motion: no-preference){
-  .reveal{opacity:0; transform:translateY(14px); will-change:transform,opacity}
-  .reveal.in-view{opacity:1; transform:none; transition:opacity .6s ease, transform .6s ease}
-  .reveal.stagger > *{opacity:0; transform:translateY(10px)}
-  .reveal.stagger.in-view > *{opacity:1; transform:none; transition:opacity .5s ease, transform .5s ease}
+  .reveal{opacity:0;transform:translateX(-18px);transition:opacity .6s ease, transform .6s ease}
+  .reveal.in-view{opacity:1;transform:none}
+  .reveal.stagger > *{opacity:0;transform:translateX(-10px)}
+  .reveal.stagger.in-view > *{opacity:1;transform:none;transition:opacity .5s ease,transform .5s ease}
   .reveal.stagger.in-view > *:nth-child(1){transition-delay:.05s}
-  .reveal.stagger.in-view > *:nth-child(2){transition-delay:.15s}
-  .reveal.stagger.in-view > *:nth-child(3){transition-delay:.25s}
-  .reveal.stagger.in-view > *:nth-child(4){transition-delay:.35s}
-  .float{animation:float 12s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .reveal.stagger.in-view > *:nth-child(2){transition-delay:.12s}
+  .reveal.stagger.in-view > *:nth-child(3){transition-delay:.18s}
 }
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1;transform:none!important;transition:none!important}
+}
+
+/* =========================
+   Accessibility / focus
+   ========================= */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  outline: var(--focus-outline);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* =========================
+   Misc UI tweaks copied & merged (from original)
+   ========================= */
+
+/* progress/indicator helper (used by script) */
+.progress{height:4px;}
+
+/* floating animation for brand mark */
+.float{animation:float 12s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* small utility spacing */
+.u-inline{display:inline-block}
+.u-center{text-align:center}
+
+/* =========================
+   Responsive header behavior
+   - hide desktop nav under 980px
+   - show hamburger and mobile flyout instead
+   ========================= */
+@media (max-width:980px){
+  .desktop-nav{display:none}
+  .menu-toggle{display:inline-flex}
+  .site-header{border-radius:12px;margin:0.5rem}
+  .mega-flyout .flyout-inner{grid-template-columns:1fr}
+  .flyout-right{display:none}
+}
+
+/* mobile styles for nav spacing */
+@media (max-width:520px){
+  .brand-title{font-size:1rem}
+  .site-header .container{padding:0 .6rem}
+  .mobile-flyout{padding:1.4rem}
+}
+
+/* =========================
+   Buttons
+   ========================= */
+.btn{display:inline-block;padding:.55rem .9rem;border-radius:10px;background:var(--pp-ink);color:var(--pp-paper);font-weight:700;border:none;cursor:pointer}
+.btn.secondary{background:transparent;color:var(--pp-ink);border:1px solid var(--pp-line)}
+.btn.ghost{background:transparent;border:none;color:var(--pp-accent)}
+
+/* =========================
+   Forms (quick styling)
+   ========================= */
+input[type="text"], input[type="email"], textarea, select{
+  width:100%;padding:.8rem;border-radius:10px;border:1px solid var(--pp-line);background:var(--pp-paper);color:var(--pp-ink);
+}
+textarea{min-height:120px}
+
+/* =========================
+   Small components used in template
+   ========================= */
+.promo-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .7rem;border-radius:999px;background:var(--pp-paper);border:1px solid var(--pp-line)}
+.card-cta{display:flex;align-items:center;gap:.75rem}
+
+/* =========================
+   Utility: rounded thumbnails in gallery footer (small)
+   ========================= */
+.thumb-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.thumb-row img{width:72px;height:72px;border-radius:10px;object-fit:cover;border:1px solid var(--pp-line)}
+
+/* =========================
+   Small helpers for existing templates
+   ========================= */
+.hero figure img, .card img, .flyout-card img{display:block;width:100%;height:auto}
+.card .body h3{margin-top:0}
+
+/* =========================
+   Fallbacks for legacy classes in your HTML
+   - keep old class names functional
+   ========================= */
+.site-header.v2 .nav{display:flex}
+.m-page404__link{display:inline-block}
+
+/* =========================
+   END OF FILE
+   ========================= */

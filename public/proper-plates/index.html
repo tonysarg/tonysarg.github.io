@@ -1,185 +1,873 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Proper Plates — Pop-Ups, Private Chef, Catering & Chef’s Pantry</title>
-  <meta name="description" content="Proper Plates by Markus Daimeion — Napa Valley pop-ups, private chef dinners, catering, and a chef’s pantry with flavored butters, pickled veggies, and more.">
-  <link rel="stylesheet" href="styles.css">
+  <meta name="description" content="Proper Plates by Markus Daimeion — Napa Valley pop-ups, private chef dinners, catering, and a chef’s pantry with flavored butters, pickled veggies, and more."/>
+  <!-- Shoelace CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.8.0/dist/themes/light.css">
+  <style>
+    /* =========================
+       Design tokens + base
+       ========================= */
+    :root{
+      --pp-ink: #12302b;
+      --pp-accent: #2f6f6f;
+      --pp-gold: #efcfae;
+      --pp-gold-2: #f3d8b1;
+      --pp-cream: #fdebd2;
+      --pp-paper: #fff7f2;
+      --pp-line: #efe0d1;
+      --pp-muted: #6b6560;
+      --pp-radius: 14px;
+      --container-max: 1120px;
+    }
+    html,body{height:100%}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color:var(--pp-ink);
+      background:var(--pp-cream);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+      -webkit-text-size-adjust:100%;
+      -ms-text-size-adjust:100%;
+      overflow-y:scroll;
+      -webkit-font-feature-settings: "liga" 1;
+    }
+    img{max-width:100%;height:auto;display:block}
+    .container{max-width:var(--container-max);margin:0 auto;padding:0 1rem}
+
+    /* fluid typographic helpers */
+    :root{
+      --step-0: clamp(1rem, .96rem + .4vw, 1.125rem);
+      --step-1: clamp(1.25rem, 1.15rem + .9vw, 1.6rem);
+      --step-2: clamp(1.6rem, 1.35rem + 1.6vw, 2.2rem);
+      --step-3: clamp(2rem, 1.6rem + 2.6vw, 3rem);
+    }
+    body{font-size:var(--step-0)}
+    h1{font-size:var(--step-3);line-height:1.05;margin:.2rem 0 1rem;font-family: 'Georgia', serif}
+    h2{font-size:var(--step-2);margin:.2rem 0 1rem}
+    h3{font-size:var(--step-1);margin:.2rem 0 .6rem}
+    .lead{font-size:clamp(1.02rem, .98rem + .4vw, 1.14rem);color:var(--pp-muted);max-width:72ch}
+
+    /* small helpers */
+    .sr-only{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+
+    /* Progress */
+    .progress{position:fixed;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--pp-gold),var(--pp-gold-2));transform-origin:0 50%;transform:scaleX(0);z-index:1200}
+
+    /* =========================
+       Header (Shoelace-driven)
+       ========================= */
+    header.site-header{
+      position:sticky;    max-width: 1200px; top:12px;z-index:900;padding:0.6rem 0;
+      background:linear-gradient(180deg, rgba(255,247,242,.98), rgba(255,247,242,.92));
+      margin:0.6rem auto;border-radius:14px;border:1px solid var(--pp-line);
+      box-shadow:0 6px 16px rgba(18,48,43,.04);
+    }
+    .site-header .container{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .brand{display:flex;align-items:center;gap:.8rem;text-decoration:none;color:var(--pp-ink)}
+    .brand-mark{width:46px;height:46px;border-radius:10px;background:linear-gradient(180deg,#f7e8cf,#efe1c6);display:grid;place-items:center;padding:.6rem;box-shadow:0 6px 12px rgba(18,48,43,.04)}
+    .brand-title{font-weight:800}
+    /* desktop nav */
+    .desktop-nav{display:flex;align-items:center;gap:.8rem}
+    .nav-list{display:flex;gap:.4rem;list-style:none;padding:0;margin:0}
+    .nav-list li{list-style:none}
+    .nav-list a,.nav-trigger{
+      color:var(--pp-ink);text-decoration:none;padding:.4rem .6rem;border-radius:10px;font-weight:700;background:transparent;border:none;cursor:pointer;font-size:.95rem;
+    }
+    .nav-list a:hover,.nav-trigger:hover{background:color-mix(in srgb,var(--pp-gold) 12%, transparent)}
+    .nav-actions{display:flex;align-items:center;gap:.6rem}
+    .header-cta{background:var(--pp-ink);color:var(--pp-paper);padding:.5rem .85rem;border-radius:10px;font-weight:700;border:none}
+
+    /* hamburger */
+    .menu-toggle{display:none;background:none;border:0;padding:.25rem;border-radius:8px;cursor:pointer}
+    .hamburger{width:26px;height:2px;background:var(--pp-ink);position:relative;display:block}
+    .hamburger::before,.hamburger::after{content:"";position:absolute;left:0;right:0;height:2px;background:var(--pp-ink)}
+    .hamburger::before{top:-7px}
+    .hamburger::after{bottom:-7px}
+
+    /* mega flyout positioning (desktop) */
+    .mega-flyout{position:absolute;left:0;right:0;top:100%;padding:1.2rem 1rem;display:none;pointer-events:none;z-index:860;transform:translateY(6px);transition:opacity .28s ease, transform .28s ease}
+    .mega-flyout[aria-hidden="false"]{display:block;pointer-events:auto;opacity:1;transform:none}
+    .flyout-inner{background:linear-gradient(180deg,var(--pp-paper),var(--pp-cream));border-radius:12px;padding:1rem;border:1px solid var(--pp-line);box-shadow:0 14px 36px rgba(18,48,43,.06);display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media (max-width:980px){ .desktop-nav{display:none} .menu-toggle{display:inline-flex} .flyout-right{display:none} .mega-flyout .flyout-inner{grid-template-columns:1fr} header.site-header{margin:0.5rem} }
+
+    /* mobile fullscreen flyout */
+    .mobile-flyout{position:fixed;inset:0;background:linear-gradient(180deg, rgba(255,247,242,0.98), rgba(253,235,210,0.98));display:none;z-index:1200;overflow:auto;padding:2rem}
+    .mobile-flyout[aria-hidden="false"]{display:block}
+    .mobile-flyout-inner{max-width:520px;margin:0 auto}
+    .mobile-nav ul{list-style:none;padding:0;margin:0;display:grid;gap:1.1rem}
+    .mobile-nav a{font-size:1.6rem;color:var(--pp-ink);text-decoration:none;font-weight:800;padding:.6rem;display:block}
+
+    /* =========================
+       Hero
+       ========================= */
+    main.hero{position:relative;overflow:hidden;padding:2.5rem 0;background:linear-gradient(180deg,color-mix(in srgb,var(--pp-gold) 8%, transparent),transparent)}
+    .hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:2rem;align-items:center}
+    .hero figure{border-radius:18px;overflow:hidden;box-shadow:0 12px 30px rgba(18,48,43,.06)}
+    .badge{display:inline-block;background:var(--pp-paper);border:1px solid var(--pp-line);color:var(--pp-gold-2);border-radius:999px;font-weight:700;padding:.35rem .7rem;margin-bottom:.6rem}
+    @media (max-width:860px){ .hero-inner{grid-template-columns:1fr} .brand-title{font-size:1rem} .container{padding:0 .8rem} }
+
+    /* CTA */
+    a.cta{display:inline-block;padding:.5rem .9rem;border-radius:10px;background:var(--pp-ink);color:var(--pp-paper);font-weight:700;text-decoration:none}
+    a.cta.secondary{background:transparent;color:var(--pp-ink);border:1px solid var(--pp-line);padding:.45rem .85rem}
+
+    /* =========================
+       Sections / cards / grid
+       ========================= */
+    .section{padding:clamp(2rem,3.6vw,3.5rem) 0}
+    .grid{display:grid;gap:1.25rem}
+    .two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:980px){ .three{grid-template-columns:1fr 1fr} }
+    @media (max-width:860px){ .two{grid-template-columns:1fr}.three{grid-template-columns:1fr} }
+    .card{background:var(--pp-paper);border:1px solid var(--pp-line);border-radius:var(--pp-radius);overflow:hidden;box-shadow:0 6px 16px rgba(18,48,43,.04)}
+    .card .body{padding:1rem 1.1rem}
+    .pill{display:inline-flex;gap:.4rem;align-items:center;border-radius:999px;background:color-mix(in srgb,var(--pp-gold) 12%, transparent);color:#5b4210;padding:.25rem .6rem;font-weight:700;font-size:.85rem}
+
+    /* responsive gallery grid + thumbnails */
+    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    .gallery-item{background:none;border:0;padding:0;cursor:pointer;border-radius:10px;overflow:hidden;display:block;text-align:left}
+    .gallery-item img{display:block;width:100%;height:160px;object-fit:cover;border-radius:10px;transition:transform .28s ease,opacity .2s ease}
+    .gallery-item:focus img,.gallery-item:hover img{transform:scale(1.03)}
+    .gallery-caption{display:block;margin-top:.45rem;color:var(--pp-muted);font-weight:700;font-size:.92rem;text-align:left}
+
+    /* lightbox */
+    .lightbox-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,6,6,0.78);z-index:1400;padding:20px}
+    .lightbox-overlay[aria-hidden="false"]{display:flex}
+    .lightbox-stage{max-width:1200px;max-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .lightbox-stage img{max-width:100%;max-height:76vh;object-fit:contain;border-radius:8px;box-shadow:0 18px 46px rgba(0,0,0,.6)}
+    .lightbox-close,.lightbox-prev,.lightbox-next{position:fixed;background:transparent;border:0;color:#fff;font-size:32px;padding:.5rem;cursor:pointer}
+    .lightbox-close{top:18px;right:20px}
+    .lightbox-prev{left:14px;top:50%;transform:translateY(-50%)}
+    .lightbox-next{right:14px;top:50%;transform:translateY(-50%)}
+
+    @media (max-width:640px){ .gallery-item img{height:120px} .lightbox-stage img{max-height:64vh} }
+
+    /* contact panels */
+    .contact{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    .panel{background:var(--pp-paper);border:1px solid var(--pp-line);border-radius:var(--pp-radius);padding:1rem;box-shadow:0 6px 14px rgba(18,48,43,.04)}
+    @media (max-width:860px){ .contact{grid-template-columns:1fr} }
+
+    /* footer */
+    footer{padding:2rem 0;border-top:1px solid var(--pp-line);color:var(--pp-muted)}
+
+    /* reveal class (also used by GSAP ScrollTrigger fallback) */
+    .reveal{opacity:0;transform:translateY(10px)} /* GSAP will animate these into view */
+
+    /* small utilities */
+    .u-center{text-align:center}
+    .muted{color:var(--pp-muted);font-size:.95rem}
+
+    /* ensure no unnatural narrow column bug */
+    main, footer, section{max-width:var(--container-max);margin:0 auto;padding:0 1rem}
+  </style>
 </head>
 <body>
-<div class="progress" aria-hidden="true"></div>
-<header class="site-header">
-  <div class="container nav">
-    <a class="brand" href="#home" aria-label="Proper Plates home">
-      <div class="logo float">P</div><span>Proper Plates</span>
-    </a>
-    <button class="menu-toggle" aria-label="Menu" aria-expanded="false">☰</button>
-    <nav class="links" aria-expanded="false">
-      <a href="#about">About</a>
-      <a href="#popups">Pop-Ups</a>
-      <a href="#private-chef">Private Chef</a>
-      <a href="#catering">Catering</a>
-      <a href="#pantry">Chef’s Pantry</a>
-      <a href="#contact" class="cta">Contact</a>
-    </nav>
-  </div>
-</header>
+  <div class="progress" aria-hidden="true"></div>
 
-<main id="home" class="hero">
-  <div class="container hero-inner reveal">
-    <div>
-      <span class="badge">Napa Valley</span>
-      <h1>Butter, but Better — plus pop-ups, private dinners & catering.</h1>
-      <p>Founded by Chef <strong>Markus Daimeion</strong>, Proper Plates started with richly flavored compound butters that friends and family couldn’t get enough of. Today we bring that same joy to wine-country pop-ups, intimate chef’s table experiences, and catered gatherings — along with a growing pantry of prepared goodies.</p>
-      <p><a class="cta" href="#contact">Book an event</a> <a style="margin-left:.6rem" href="#pantry">Shop the pantry</a></p>
-    </div>
-    <figure data-parallax>
-      <img src="assets/event_street.jpg" width="1600" height="900" alt="Proper Plates pouring and serving at a downtown pop-up event">
-    </figure>
-  </div>
-</main>
+  <!-- Shoelace needs to be loaded before using components -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.8.0/dist/shoelace.js"></script>
 
-<section id="about" class="section">
-  <div class="container grid two reveal">
-    <div>
-      <h2>About Proper Plates</h2>
-      <p class="lead">“Butter, but Better.” Chef Markus began by crafting flavored butters — a simple idea that blossomed into a full-service culinary project. Fueled by a love of food and hospitality, we create thoughtful bites and memorable experiences, sharing a taste of Napa Valley through a seasoned aspiring chef’s lens.</p>
-    </div>
-    <div class="card reveal">
-      <img src="assets/chef_plating.jpg" width="1200" height="1800" alt="Chef Markus plating risotto and garnishing with microgreens">
-      <div class="body">
-        <div class="pill">By Markus Daimeion</div>
-        <h3>The Real Deal</h3>
-        <p>From wine-country tastings to neighborhood pop-ups, we’re always refining our craft and dialing in flavors. Ask about our seasonal menus and custom tastings.</p>
+  <!-- ====== Header: Shoelace + integrated nav (preserves your content) ====== -->
+  <header class="site-header" role="banner">
+    <div class="container">
+      <a class="brand" href="#home" aria-label="Proper Plates home">
+        <img src="assets/brand-mark.webp" class="brand-mark" alt="Proper Plates logo">
+        <span class="brand-title">Proper Plates</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <ul class="nav-list" role="menubar">
+          <li role="none"><button class="nav-trigger" data-trigger="recipes" aria-expanded="false">Recipes <span class="plus">+</span></button></li>
+          <li role="none"><a href="#popups">Pop-Ups</a></li>
+          <li role="none"><a href="#private-chef">Private Chef</a></li>
+          <li role="none"><a href="#catering">Catering</a></li>
+          <li role="none"><a href="#pantry">Chef’s Pantry</a></li>
+          <li role="none"><a href="#gallery">Gallery</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions" role="toolbar" aria-label="Header actions">
+        <a class="header-cta" href="#contact">Contact</a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+          <span class="hamburger" aria-hidden="true"></span>
+        </button>
       </div>
     </div>
-  </div>
-</section>
 
-<section id="popups" class="section">
-  <div class="container reveal">
-    <h2>Pop-Ups</h2>
-    <p class="lead">We celebrate the flavors of the world — one plate at a time. Whether your location has a kitchen or not, we show up ready to cook. Pop-Ups are our specialty, and we’d love to join you for your next event.</p>
-    <div class="gallery reveal" style="margin-top:1rem">
-      <img class="w8" src="assets/tomato_toasts.jpg" width="1200" height="1800" alt="Crostini topped with whipped cheese and tomatoes" loading="lazy">
-      <img class="w4" src="assets/flyer_front.png" width="900" height="700" alt="Proper Plates events flyer" loading="lazy">
-    </div>
-  </div>
-</section>
+    <!-- Desktop mega flyout (keeps your links and cards) -->
+    <div class="mega-flyout" data-flyout="recipes" aria-hidden="true">
+      <div class="container flyout-inner" role="region" aria-label="Recipes flyout">
+        <div class="flyout-left">
+          <h4 class="flyout-title">Collections</h4>
+          <ul class="flyout-links">
+            <li><a href="/collection/fall-recipes">Fall Recipes</a></li>
+            <li><a href="/collection/best-of-tofu">Best of Tofu</a></li>
+            <li><a href="/collection/community-favorites">Community Favorites</a></li>
+            <li><a href="/collection/mayas-faves">Maya’s Faves</a></li>
+            <li><a href="/collection/single-serve">Single Serve</a></li>
+            <li><a href="/collection/vegan-classics">Vegan Classics</a></li>
+          </ul>
+        </div>
 
-<section id="private-chef" class="section">
-  <div class="container grid two reveal">
-    <div>
-      <h2>Private Chef</h2>
-      <p class="lead">From intimate wine dinners to multi-course tasting menus, Chef Markus brings restaurant-quality polish to your home or vacation rental. We’ll design a seasonal menu around your preferences and pair it with relaxed, attentive service.</p>
-      <p><strong>Perfect for</strong>: anniversaries, small celebrations, winemaker dinners, and chef’s-table experiences.</p>
-    </div>
-    <div class="card reveal">
-      <img src="assets/flyer_back.png" width="900" height="700" alt="Proper Plates flyer back — retail products and market info" loading="lazy">
-      <div class="body">
-        <h3>Taste Napa at Home</h3>
-        <p>Tell us your vibe — rustic Italian, market-fresh Californian, or playful small-plates — and we’ll build the evening around it.</p>
+        <div class="flyout-right">
+          <div class="flyout-card card">
+            <img src="assets/cucumber_garnish.webp" alt="Smashed cucumber salad" loading="lazy">
+            <div class="body">
+              <h5>Smashed Cucumber salad</h5>
+              <a class="small-link" href="/recipe-index/smashed-cucumber-salad">View recipe →</a>
+            </div>
+          </div>
+          <div class="flyout-card card">
+            <img src="assets/fried_chicken_plate.webp" alt="Crispy tofu" loading="lazy">
+            <div class="body">
+              <h5>Tofu: Crispy in 10 minutes</h5>
+              <a class="small-link" href="/recipe-index/crispy-tofu-in-10-minutes">View recipe →</a>
+            </div>
+          </div>
+          <div class="flyout-card card">
+            <img src="assets/vegan_mayo.webp" alt="Vegan mayo dip" loading="lazy">
+            <div class="body">
+              <h5>Vegan Mayo</h5>
+              <a class="small-link" href="/recipe-index/vegan-mayo">View recipe →</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
 
-<section id="catering" class="section">
-  <div class="container grid two reveal">
-    <div class="card reveal">
-      <img src="assets/event_street.jpg" width="1600" height="900" alt="Guests enjoying an outdoor tasting" loading="lazy">
-      <div class="body">
-        <h3>Bites, Boards & Stations</h3>
-        <p>Wine-bar snacks, passed bites, sandwich stations, salad spreads — we’ll tailor the format to your space and guest count.</p>
+    <!-- Mobile fullscreen flyout (keeps the menu content & search) -->
+    <div class="mobile-flyout" id="mobileFlyout" aria-hidden="true">
+      <div class="mobile-flyout-inner">
+        <header class="mobile-flyout-head" style="display:flex;align-items:center;justify-content:space-between;">
+          <img src="assets/brand-mark.webp" alt="Proper Plates" class="brand-mark" style="width:56px;height:56px">
+          <button id="mobileClose" aria-label="Close menu" class="btn" style="background:transparent;border:none;font-size:1.4rem">✕</button>
+        </header>
+
+        <nav class="mobile-nav" aria-label="Mobile navigation">
+          <ul>
+            <li><a href="#recipes">Recipes +</a></li>
+            <li><a href="#popups">Pop-Ups</a></li>
+            <li><a href="#private-chef">Private Chef</a></li>
+            <li><a href="#catering">Catering</a></li>
+            <li><a href="#pantry">Chef’s Pantry</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#contact" class="cta">Contact</a></li>
+          </ul>
+
+          <form class="mobile-search" action="/recipe-search" method="get" role="search" aria-label="Search recipes" style="margin-top:1.2rem">
+            <label class="sr-only" for="q-mobile">Search</label>
+            <input id="q-mobile" name="q" type="search" placeholder="Search for recipes" style="width:100%;padding:.85rem;border-radius:10px;border:1px solid var(--pp-line);background:var(--pp-paper)">
+          </form>
+
+          <div class="mobile-social" style="margin-top:1.25rem;display:flex;gap:1rem;">
+            <a href="https://instagram.com/properplates" target="_blank" rel="noopener">Instagram</a>
+            <a href="https://youtube.com" target="_blank" rel="noopener">YouTube</a>
+            <a href="https://tiktok.com" target="_blank" rel="noopener">TikTok</a>
+          </div>
+        </nav>
       </div>
     </div>
-    <div>
-      <h2>Catering</h2>
-      <p class="lead">Full-service food handling & preparation for events of many kinds — from sampling stations to outdoor summer parties. Need bites for a wine event? Sandwiches for a community tasting? Say less.</p>
-      <p><em>Ask about rentals, staffing, serviceware, and dietary accommodations.</em></p>
-    </div>
-  </div>
-</section>
+  </header>
 
-<section id="pantry" class="section">
-  <div class="container">
-    <h2 class="reveal">Chef’s Pantry</h2>
-    <p class="lead reveal">Prepared ingredients and ready-to-enjoy foods, made in small batches: compound (flavored) butters, pickled vegetables, grab-and-go salads, meal kits, and more. Inquire for the current list with handling/serving notes and delivery options.</p>
-    <div class="grid three reveal stagger" style="margin-top:1rem">
-      <div class="card">
-        <img src="assets/flyer_back.png" width="900" height="700" alt="Compound butter product shot" loading="lazy">
+  <!-- ========== Main content (keeps your content verbatim) ========== -->
+  <main id="home" class="hero" role="main">
+    <div class="container hero-inner reveal" id="heroInner">
+      <div>
+        <span class="badge">Napa Valley</span>
+        <h1>Butter, but Better — plus pop-ups, private dinners & catering.</h1>
+        <p class="lead">Chef Markus started out making compound butters for friends and farmers markets. Now he brings that same energy to pop-ups, private dinners, and catering across wine country — minimal fuss, big flavor. Say less.</p>
+        <p><a class="cta" href="#contact" id="openContactBtn">Book an event</a> <a class="cta secondary" style="margin-left:.6rem" href="#pantry">Shop the pantry</a></p>
+      </div>
+
+      <figure data-parallax>
+        <img src="assets/event_street.webp" width="1600" height="900" alt="Proper Plates pouring and serving at a downtown pop-up event" loading="eager">
+      </figure>
+    </div>
+  </main>
+
+  <!-- marquee -->
+  <section class="marquee-section" aria-label="Highlights">
+    <div class="marquee" id="marqueeRoot" aria-hidden="true" style="overflow:hidden;padding:.9rem 0">
+      <div class="container" style="overflow:hidden">
+        <div id="marqueeTrack" style="display:flex;gap:1rem;white-space:nowrap">
+          <span style="display:inline-block;padding:.35rem .9rem;border-radius:999px;font-weight:800;background:color-mix(in srgb,var(--pp-gold) 14%, transparent);color:var(--pp-ink)">Pop-Ups</span>
+          <span style="display:inline-block;padding:.35rem .9rem;border-radius:999px;font-weight:800;background:color-mix(in srgb,var(--pp-gold) 14%, transparent);color:var(--pp-ink)">Private Chef</span>
+          <span style="display:inline-block;padding:.35rem .9rem;border-radius:999px;font-weight:800;background:color-mix(in srgb,var(--pp-gold) 14%, transparent);color:var(--pp-ink)">Catering</span>
+          <span style="display:inline-block;padding:.35rem .9rem;border-radius:999px;font-weight:800;background:color-mix(in srgb,var(--pp-gold) 14%, transparent);color:var(--pp-ink)">Chef’s Pantry</span>
+
+          <!-- duplicated for seamless loop -->
+          <span style="display:inline-block;padding:.35rem .9rem;border-radius:999px;font-weight:800;background:color-mix(in srgb,var(--pp-gold) 14%, transparent);color:var(--pp-ink)">Pop-Ups</span>
+          <span style="display:inline-block;padding:.35rem .9rem;border-radius:999px;font-weight:800;background:color-mix(in srgb,var(--pp-gold) 14%, transparent);color:var(--pp-ink)">Private Chef</span>
+          <span style="display:inline-block;padding:.35rem .9rem;border-radius:999px;font-weight:800;background:color-mix(in srgb,var(--pp-gold) 14%, transparent);color:var(--pp-ink)">Catering</span>
+          <span style="display:inline-block;padding:.35rem .9rem;border-radius:999px;font-weight:800;background:color-mix(in srgb,var(--pp-gold) 14%, transparent);color:var(--pp-ink)">Chef’s Pantry</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <div class="container grid two">
+      <div class="reveal">
+        <h2>About Proper Plates</h2>
+        <p class="lead">What started with Chef Markus whipping up small-batch flavored butters has grown into pop-ups, retail goods, and full-service events all over Napa Valley. We show up ready to cook — your place, our flavors. From farmers markets to intimate private dinners and corporate events, everything we make is thoughtful, bold, and rooted in genuine hospitality. You want great food and a memorable experience? Say less. We got you.</p>
+      </div>
+
+      <div class="card reveal">
+        <img src="assets/best-chef-best-brunch-awards-north-bay-bohemian.webp" width="1200" height="1800" alt="Markus Daimeion holding his Best Chef & Best Brunch awards from the North Bay Bohemian" loading="lazy">
         <div class="body">
-          <h3>Compound Butter</h3>
-          <p>Our signature “butter, but better.” Fantastic on steaks, vegetables, toast & everything else.</p>
-        </div>
-      </div>
-      <div class="card">
-        <img src="assets/tomato_toasts.jpg" width="1200" height="1800" alt="Small plates and crostini" loading="lazy">
-        <div class="body">
-          <h3>Small Plates</h3>
-          <p>From crunchy crostini to seasonal salads, perfect for grazing and pairing.</p>
-        </div>
-      </div>
-      <div class="card">
-        <img src="assets/chef_plating.jpg" width="1200" height="1800" alt="Chef plating risotto" loading="lazy">
-        <div class="body">
-          <h3>Meal Kits</h3>
-          <p>Prep-friendly kits with simple finishing instructions for cozy nights in.</p>
+          <div class="pill">By Markus Daimeion</div>
+          <h3>The Real Deal</h3>
+          <p>From wine-country tastings to neighborhood pop-ups, we’re always refining our craft and dialing in flavors. Ask about our seasonal menus and custom tastings.</p>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="contact" class="section">
-  <div class="container contact reveal">
-    <div class="panel">
-      <h2>Contact</h2>
-      <p class="lead">Tell us a bit about your event or what you’d like from the pantry and we’ll follow up quickly.</p>
-      <div class="list" style="margin-top:.6rem">
-        <a class="mail" href="mailto:events@properplates.biz">events@properplates.biz</a>
-        <a href="tel:+17073427667">707-342-7667</a>
-        <a href="https://instagram.com/properplates" target="_blank" rel="noopener">Instagram @properplates</a>
-        <small class="muted">Based in Napa, CA</small>
+  <!-- POP-UPS -->
+  <section id="popups" class="section">
+    <div class="container">
+      <div class="reveal">
+        <h2>Pop-Ups</h2>
+        <p class="lead">We celebrate the flavors of the world — one plate at a time. Whether your location has a kitchen or not, we show up ready to cook. Pop-Ups are our specialty, and we’d love to join you for your next event.</p>
+      </div>
+
+      <div class="gallery reveal" style="margin-top:1rem">
+        <img class="w6" src="assets/tomato_toasts.webp" width="1200" height="1800" alt="Crostini topped with whipped cheese and tomatoes" loading="lazy">
+        <img class="w3" src="assets/garnishing.webp" width="900" height="700" alt="Garnishing a dish with microgreens" loading="lazy">
+        <img class="w3" src="assets/chef-plating-at-event.webp" width="900" height="700" alt="Chef plating at a live event" loading="lazy">
       </div>
     </div>
-    <div class="panel">
-      <h3>Quick Inquiry</h3>
-      <form action="https://formsubmit.co/events@properplates.biz" method="POST">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_subject" value="New inquiry from properplates.biz">
-        <div class="grid two">
-          <p><label>Full name<br><input required name="name" placeholder="Your name" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--line);background:var(--paper);color:var(--ink)"></label></p>
-          <p><label>Email<br><input required type="email" name="email" placeholder="you@example.com" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--line);background:var(--paper);color:var(--ink)"></label></p>
+  </section>
+
+  <!-- PRIVATE CHEF -->
+  <section id="private-chef" class="section">
+    <div class="container grid two">
+      <div class="reveal">
+        <h2>Private Chef</h2>
+        <p class="lead">From intimate wine dinners to multi-course tasting menus, Chef Markus brings restaurant-quality polish to your home or vacation rental. We’ll design a seasonal menu around your preferences and pair it with relaxed, attentive service.</p>
+        <p><strong>Perfect for</strong>: anniversaries, small celebrations, winemaker dinners, and chef’s-table experiences.</p>
+      </div>
+
+      <div class="card reveal">
+        <img src="assets/flyer_back.png" width="900" height="700" alt="Proper Plates flyer back — retail products and market info" loading="lazy">
+        <div class="body">
+          <h3>Taste Napa at Home</h3>
+          <p>Tell us your vibe — rustic Italian, market-fresh Californian, or playful small-plates — and we’ll build the evening around it.</p>
         </div>
-        <div class="grid two">
-          <p><label>Phone<br><input name="phone" placeholder="Optional" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--line);background:var(--paper);color:var(--ink)"></label></p>
-          <p><label>Service<br>
-            <select name="service" style="width:100%;padding:.6rem;border-radius:.6rem;border:1px solid var(--line);background:var(--paper);color:var(--ink)">
-              <option>Pop-Ups</option>
-              <option>Private Chef</option>
-              <option>Catering</option>
-              <option>Chef’s Pantry</option>
-              <option>Other</option>
-            </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATERING -->
+  <section id="catering" class="section">
+    <div class="container grid two">
+      <div class="card reveal">
+        <img src="assets/event_street.webp" width="1600" height="900" alt="Guests enjoying an outdoor tasting" loading="lazy">
+        <div class="body">
+          <h3>Bites, Boards & Stations</h3>
+          <p>Wine-bar snacks, passed bites, sandwich stations, salad spreads — we’ll tailor the format to your space and guest count.</p>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <h2>Catering</h2>
+        <p class="lead">Full-service food handling & preparation for events of many kinds — from sampling stations to outdoor summer parties. Need bites for a wine event? Sandwiches for a community tasting? Say less.</p>
+        <p><em>Ask about rentals, staffing, serviceware, and dietary accommodations.</em></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANTRY -->
+  <section id="pantry" class="section">
+    <div class="container">
+      <h2 class="reveal">Chef’s Pantry</h2>
+      <p class="lead reveal">Prepared ingredients and ready-to-enjoy foods, made in small batches: compound (flavored) butters, pickled vegetables, grab-and-go salads, meal kits, and more. Inquire for the current list with handling/serving notes and delivery options.</p>
+
+      <div class="grid three reveal stagger" style="margin-top:1rem">
+        <div class="card">
+          <img src="assets/flyer_back.png" width="900" height="700" alt="Compound butter product shot" loading="lazy">
+          <div class="body">
+            <h3>Compound Butter</h3>
+            <p>Our signature “butter, but better.” Fantastic on steaks, vegetables, toast & everything else.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="assets/pickled-veggies.webp" width="1200" height="1800" alt="Jar of house-made pickled vegetables" loading="lazy">
+          <div class="body">
+            <h3>Pickled Veggies</h3>
+            <p>Bright, tangy and crunchy — perfect for snacks, salads and charcuterie boards.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="assets/chef-plating-at-event.webp" width="1200" height="1800" alt="Chef plating a meal kit" loading="lazy">
+          <div class="body">
+            <h3>Meal Kits</h3>
+            <p>Prep-friendly kits with simple finishing instructions for cozy nights in.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="section">
+    <div class="container reveal">
+      <h2>Gallery</h2>
+
+      <!-- Responsive grid thumbnails with captions.
+           data-full -> file for the lightbox (choose larger files if available) -->
+      <div class="gallery-grid" id="galleryGrid" style="margin-top:1rem">
+        <button class="gallery-item" data-full="assets/previous-menu (1).jpg" aria-label="Open image: Japanese Curried Chicken Banh Mi">
+          <img data-src="assets/previous-menu (1).jpg" alt="Japanese Curried Chicken Banh Mi" loading="lazy" width="600" height="400">
+          <span class="gallery-caption">Japanese Curried Chicken Banh Mi</span>
+        </button>
+
+        <button class="gallery-item" data-full="assets/previous-menu (2).jpg" aria-label="Open image: Banh Mi with Pho dip (French-dip style)">
+          <img data-src="assets/previous-menu (2).jpg" alt="Banh Mi with Pho dip (French-dip style)" loading="lazy" width="600" height="400">
+          <span class="gallery-caption">Banh Mi + Pho dip (French-dip style)</span>
+        </button>
+
+        <button class="gallery-item" data-full="assets/previous-menu (3).jpg" aria-label="Open image: Risotto alla Milanese">
+          <img data-src="assets/previous-menu (3).jpg" alt="Risotto alla Milanese" loading="lazy" width="600" height="400">
+          <span class="gallery-caption">Risotto alla Milanese</span>
+        </button>
+
+        <button class="gallery-item" data-full="assets/previous-menu (4).jpg" aria-label="Open image: Chicken in a Biscuit / Panini">
+          <img data-src="assets/previous-menu (4).jpg" alt="Chicken in a Biscuit and Panini" loading="lazy" width="600" height="400">
+          <span class="gallery-caption">Chicken in a Biscuit · Panini</span>
+        </button>
+
+        <button class="gallery-item" data-full="assets/previous-menu (5).jpg" aria-label="Open image: Carrot 'Tartare'">
+          <img data-src="assets/previous-menu (5).jpg" alt="Carrot Tartare" loading="lazy" width="600" height="400">
+          <span class="gallery-caption">Carrot “Tartare”</span>
+        </button>
+
+        <button class="gallery-item" data-full="assets/cucumber_garnish.webp" aria-label="Open image: Cucumber garnish">
+          <img data-src="assets/cucumber_garnish.webp" alt="Cucumber garnish" loading="lazy" width="600" height="400">
+          <span class="gallery-caption">Cucumber Garnish</span>
+        </button>
+
+        <button class="gallery-item" data-full="assets/award.webp" aria-label="Open image: Award celebration">
+          <img data-src="assets/award.webp" alt="Award celebration" loading="lazy" width="600" height="400">
+          <span class="gallery-caption">Award Celebration</span>
+        </button>
+
+        <button class="gallery-item" data-full="assets/risotto_plating_2.webp" aria-label="Open image: Risotto plating">
+          <img data-src="assets/risotto_plating_2.webp" alt="Plating risotto" loading="lazy" width="600" height="400">
+          <span class="gallery-caption">Plated Risotto</span>
+        </button>
+      </div>
+
+      <!-- Lightbox overlay -->
+      <div id="lightboxOverlay" class="lightbox-overlay" aria-hidden="true" role="dialog" aria-label="Image preview">
+        <button class="lightbox-close" aria-label="Close image">✕</button>
+        <button class="lightbox-prev" aria-label="Previous image">‹</button>
+        <div class="lightbox-stage" role="document" aria-live="polite">
+          <img id="lightboxImg" src="" alt="" />
+          <p id="lightboxCaption" class="muted" style="margin-top:.6rem;text-align:center"></p>
+        </div>
+        <button class="lightbox-next" aria-label="Next image">›</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section">
+    <div class="container contact reveal">
+      <div class="panel">
+        <h2>Contact</h2>
+        <p class="lead">Tell us a bit about your event or what you’d like from the pantry and we’ll follow up quickly.</p>
+        <div class="list" style="margin-top:.6rem">
+          <a class="mail" href="mailto:events@properplates.biz">events@properplates.biz</a><br>
+          <a href="tel:+17073427667">707-342-7667</a><br>
+          <a href="https://instagram.com/properplates" target="_blank" rel="noopener">Instagram @properplates</a>
+          <small class="muted">Based in Napa, CA</small>
+        </div>
+      </div>
+
+      <!-- right-side quick form remains inline but visually adapted with Shoelace inputs -->
+      <div class="panel">
+        <h3>Quick Inquiry</h3>
+        <form action="https://formsubmit.co/events@properplates.biz" method="POST">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_subject" value="New inquiry from properplates.biz">
+
+          <div class="grid two" style="gap:.75rem">
+            <p style="margin:0"><label>Full name<br>
+              <sl-input name="name" required placeholder="Your name" style="width:100%"></sl-input>
+            </label></p>
+
+            <p style="margin:0"><label>Email<br>
+              <sl-input type="email" name="email" required placeholder="you@example.com" style="width:100%"></sl-input>
+            </label></p>
+          </div>
+
+          <div class="grid two" style="gap:.75rem;margin-top:.75rem">
+            <p style="margin:0"><label>Phone<br>
+              <sl-input name="phone" placeholder="Optional" style="width:100%"></sl-input>
+            </label></p>
+
+            <p style="margin:0"><label>Service<br>
+              <sl-select name="service" placeholder="Select a service" style="width:100%">
+                <sl-menu-item value="Pop-Ups">Pop-Ups</sl-menu-item>
+                <sl-menu-item value="Private Chef">Private Chef</sl-menu-item>
+                <sl-menu-item value="Catering">Catering</sl-menu-item>
+                <sl-menu-item value="Chef’s Pantry">Chef’s Pantry</sl-menu-item>
+                <sl-menu-item value="Other">Other</sl-menu-item>
+              </sl-select>
+            </label></p>
+          </div>
+
+          <p style="margin-top:.75rem"><label>Details<br>
+            <sl-textarea name="message" required placeholder="Date, guest count, vibe, dietary needs…" rows="5" style="width:100%"></sl-textarea>
           </label></p>
-        </div>
-        <p><label>Details<br><textarea required name="message" rows="5" placeholder="Date, guest count, vibe, dietary needs…" style="width:100%;padding:.7rem;border-radius:.6rem;border:1px solid var(--line);background:var(--paper);color:var(--ink)"></textarea></label></p>
-        <p><button class="cta" type="submit">Send</button></p>
-        <small class="muted">Submits via FormSubmit.co — replace with your preferred form later.</small>
-      </form>
-    </div>
-  </div>
-</section>
 
-<footer>
-  <div class="container">
-    © <span id="y"></span> Proper Plates • Napa, CA 
-    <a class="cta" href="#contact">Book now</a>
-  </div>
-</footer>
-<script src="script.js"></script>
-<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+          <p style="margin-top:.6rem">
+            <sl-button type="primary" class="cta" submit>Send</sl-button>
+          </p>
+
+          <small class="muted">Submits via FormSubmit.co — replace with your preferred form later.</small>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <div>© <span id="y"></span> Proper Plates • Napa, CA</div>
+      <div><a class="header-cta" href="#contact">Book now</a></div>
+    </div>
+  </footer>
+
+  <!-- Shoelace dialog used for optional contact modal (keeps but not required) -->
+  <sl-dialog label="Contact Proper Plates" id="contactDialog" style="--width:640px">
+    <form slot="footer" method="POST" action="https://formsubmit.co/events@properplates.biz">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_subject" value="Modal inquiry from properplates.biz">
+
+      <sl-input name="name" placeholder="Your name" required style="margin-bottom:.6rem"></sl-input>
+      <sl-input name="email" type="email" placeholder="you@example.com" required style="margin-bottom:.6rem"></sl-input>
+      <sl-textarea name="message" placeholder="Tell us about your event…" rows="4" required></sl-textarea>
+
+      <sl-button type="primary" submit>Send</sl-button>
+    </form>
+  </sl-dialog>
+
+  <!-- GSAP & plugins (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    // small helpers
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+
+    // expose year
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // -------------------------
+    // Menu / flyout behavior (improved: clear timer when entering flyout)
+    // -------------------------
+    const recipesTrigger = document.querySelector('.nav-trigger');
+    const megaFlyout = document.querySelector('.mega-flyout');
+    let flyoutOpen = false;
+    let flyoutTimer;
+
+    function openFlyout(){
+      clearTimeout(flyoutTimer);
+      if (recipesTrigger) recipesTrigger.setAttribute('aria-expanded','true');
+      if (megaFlyout) megaFlyout.setAttribute('aria-hidden','false');
+      flyoutOpen = true;
+      // micro animation via GSAP (guard in case GSAP isn't available)
+      try {
+        gsap.fromTo(megaFlyout.querySelector('.flyout-inner'), {y:6,opacity:0}, {y:0,opacity:1,duration:.36, ease:"power2.out"});
+      } catch(e){}
+    }
+    function closeFlyout(){
+      if (recipesTrigger) recipesTrigger.setAttribute('aria-expanded','false');
+      if (megaFlyout) megaFlyout.setAttribute('aria-hidden','true');
+      flyoutOpen = false;
+    }
+    function closeFlyoutAfterDelay(){
+      flyoutTimer = setTimeout(()=> closeFlyout(), 220);
+    }
+    function toggleFlyout(){ flyoutOpen ? closeFlyout() : openFlyout(); }
+
+    if (recipesTrigger) {
+      recipesTrigger.addEventListener('mouseenter', () => openFlyout());
+      recipesTrigger.addEventListener('focus', () => openFlyout());
+      recipesTrigger.addEventListener('mouseleave', () => closeFlyoutAfterDelay());
+      recipesTrigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleFlyout();
+      });
+    }
+    // keep open when moving into the flyout panel
+    if (megaFlyout) {
+      megaFlyout.addEventListener('mouseenter', () => {
+        clearTimeout(flyoutTimer);
+      });
+      megaFlyout.addEventListener('mouseleave', () => closeFlyoutAfterDelay());
+    }
+
+    // Mobile drawer open/close
+    const mobileFlyout = document.getElementById('mobileFlyout');
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileClose = document.getElementById('mobileClose');
+    if (menuToggle){
+      menuToggle.addEventListener('click', () => {
+        const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+        menuToggle.setAttribute('aria-expanded', String(!expanded));
+        mobileFlyout.setAttribute('aria-hidden', String(expanded)); // if expanded true -> hide
+        if (!expanded) {
+          try { gsap.fromTo(mobileFlyout, {opacity:0,y:12}, {opacity:1,y:0,duration:.35, ease:'power2.out'}); } catch(e){}
+        } else {
+          try { gsap.to(mobileFlyout, {opacity:0,duration:.18, onComplete: ()=> mobileFlyout.setAttribute('aria-hidden','true')}); } catch(e){
+            mobileFlyout.setAttribute('aria-hidden','true');
+          }
+        }
+      });
+    }
+    if (mobileClose) mobileClose.addEventListener('click', ()=> {
+      menuToggle && menuToggle.setAttribute('aria-expanded','false');
+      mobileFlyout.setAttribute('aria-hidden','true');
+    });
+
+    // -------------------------
+    // GSAP: hero entrance timeline
+    // -------------------------
+    try {
+      gsap.registerPlugin(ScrollTrigger, Draggable);
+    } catch(e){}
+
+    // hero timeline: subtle left->right reveal for text, slight scale for image + parallax
+    const heroText = document.querySelectorAll('#heroInner > div:first-child > *');
+    const heroImg = document.querySelector('#heroInner figure img');
+
+    try {
+      const heroTl = gsap.timeline({defaults:{ease:'power2.out', duration:.6}});
+      heroTl.from(heroText, {x:-14, opacity:0, stagger:0.06});
+      heroTl.from(heroImg, {scale:1.04, opacity:0.95, duration:0.9}, '-=.48');
+    } catch(e){}
+
+    // image parallax on scroll (subtle)
+    if (heroImg) {
+      try {
+        gsap.to(heroImg, {
+          yPercent: -6,
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroImg,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true
+          }
+        });
+      } catch(e){}
+    }
+
+    // -------------------------
+    // Marquee: smooth continuous loop
+    // -------------------------
+    (function initMarquee(){
+      const track = document.getElementById('marqueeTrack');
+      if (!track) return;
+      // measure width (safe guard)
+      const itemsWidth = [...track.children].reduce((sum, el)=> sum + (el.offsetWidth || 200) + parseFloat(getComputedStyle(el).marginRight || 0), 0);
+      try {
+        gsap.to(track, {
+          x: `-=${itemsWidth/2}`,
+          ease: 'none',
+          repeat: -1,
+          duration: Math.max(18, itemsWidth/100),
+        });
+      } catch(e){}
+    })();
+
+    // -------------------------
+    // Gallery: responsive grid, lazy-load thumbnails, accessible lightbox
+    // -------------------------
+    (function initGalleryGrid(){
+      const gallery = document.getElementById('galleryGrid');
+      if (!gallery) return;
+
+      const items = Array.from(gallery.querySelectorAll('.gallery-item'));
+      const imgs = gallery.querySelectorAll('img[data-src]');
+
+      // Lazy-load thumbnails with IntersectionObserver (rootMargin to preload early)
+      const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const img = entry.target;
+          const src = img.getAttribute('data-src');
+          if (src) {
+            img.src = src;
+            img.removeAttribute('data-src');
+            img.addEventListener('load', () => img.style.opacity = '1');
+          }
+          obs.unobserve(img);
+        });
+      }, {rootMargin: '200px 0px'});
+
+      imgs.forEach(img => {
+        img.style.opacity = '0';
+        io.observe(img);
+      });
+
+      // Lightbox elements
+      const overlay = document.getElementById('lightboxOverlay');
+      const lbImg = document.getElementById('lightboxImg');
+      const caption = document.getElementById('lightboxCaption');
+      let currentIndex = -1;
+
+      function openLightbox(idx){
+        currentIndex = idx;
+        const btn = items[idx];
+        const full = btn.getAttribute('data-full');
+        const alt = btn.querySelector('img').getAttribute('alt') || '';
+        overlay.setAttribute('aria-hidden','false');
+        lbImg.src = full;
+        lbImg.alt = alt;
+        caption.textContent = alt;
+        document.body.style.overflow = 'hidden';
+        // preload neighbors
+        preload(idx+1); preload(idx-1);
+      }
+
+      function closeLightbox(){
+        overlay.setAttribute('aria-hidden','true');
+        lbImg.src = '';
+        document.body.style.overflow = '';
+        currentIndex = -1;
+      }
+
+      function showNext(delta = 1){
+        if (currentIndex < 0) return;
+        let next = (currentIndex + delta + items.length) % items.length;
+        openLightbox(next);
+      }
+
+      function preload(i){
+        if (i < 0 || i >= items.length) return;
+        const src = items[i].getAttribute('data-full');
+        const p = new Image(); p.src = src;
+      }
+
+      // thumbnail activation (click & keyboard)
+      items.forEach((btn, idx) => {
+        btn.addEventListener('click', ()=> openLightbox(idx));
+        btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(idx); } });
+      });
+
+      // overlay controls
+      const closeBtn = overlay.querySelector('.lightbox-close');
+      const nextBtn = overlay.querySelector('.lightbox-next');
+      const prevBtn = overlay.querySelector('.lightbox-prev');
+
+      closeBtn && closeBtn.addEventListener('click', closeLightbox);
+      nextBtn && nextBtn.addEventListener('click', ()=> showNext(1));
+      prevBtn && prevBtn.addEventListener('click', ()=> showNext(-1));
+
+      // keyboard nav
+      document.addEventListener('keydown', (e) => {
+        if (overlay.getAttribute('aria-hidden') === 'false'){
+          if (e.key === 'Escape') closeLightbox();
+          if (e.key === 'ArrowRight') showNext(1);
+          if (e.key === 'ArrowLeft') showNext(-1);
+        }
+      });
+
+      // touch swipe (mobile)
+      let touchStartX = 0;
+      overlay.addEventListener('touchstart', (e)=> { touchStartX = e.touches[0].clientX; });
+      overlay.addEventListener('touchend', (e)=> {
+        const dx = (e.changedTouches[0].clientX - touchStartX);
+        if (Math.abs(dx) > 50){ if (dx < 0) showNext(1); else showNext(-1); }
+      });
+
+      // close overlay when clicking backdrop (but not when clicking image)
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeLightbox();
+      });
+    })();
+
+    // -------------------------
+    // Reveal on scroll for .reveal elements
+    // -------------------------
+    (function initScrollReveal(){
+      const revealed = document.querySelectorAll('.reveal');
+      revealed.forEach(el => {
+        try {
+          gsap.fromTo(el, {opacity:0, y:10}, {
+            opacity:1, y:0, duration:.6, ease:'power2.out',
+            scrollTrigger: { trigger: el, start: "top 90%", once:true }
+          });
+        } catch(e){
+          // fallback simple reveal if GSAP or ScrollTrigger missing
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        }
+      });
+    })();
+
+    // -------------------------
+    // Micro interactions: buttons, menu
+    // -------------------------
+    // open contact dialog via Shoelace (if available)
+    const contactDialog = document.getElementById('contactDialog');
+    const openContactBtn = document.getElementById('openContactBtn');
+    if (openContactBtn && contactDialog && window.customElements) {
+      openContactBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        contactDialog.show();
+      });
+    }
+
+    // fix progress bar on scroll (simple)
+    const progress = document.querySelector('.progress');
+    window.addEventListener('scroll', () => {
+      const pct = Math.min(1, document.documentElement.scrollTop / (document.documentElement.scrollHeight - window.innerHeight));
+      try { gsap.to(progress, {scaleX: pct, transformOrigin: '0 50%', duration: 0.12, ease:'none'}); } catch(e){
+        progress.style.transform = `scaleX(${pct})`;
+      }
+    });
+
+    // lightweight keyboard accessibility: escape closes mobile flyout & dialog
+    document.addEventListener('keydown', (e)=>{
+      if (e.key === 'Escape') {
+        if (mobileFlyout && mobileFlyout.getAttribute('aria-hidden') === 'false') {
+          mobileFlyout.setAttribute('aria-hidden','true');
+          menuToggle && menuToggle.setAttribute('aria-expanded','false');
+        }
+        if (contactDialog && contactDialog.open) contactDialog.hide();
+      }
+    });
+
+    // small layout fix: ensure container max width doesn't shrink in certain embed contexts
+    function fixWidth(){
+      document.documentElement.style.setProperty('--container-max', '1120px');
+      document.body.style.minWidth = '320px';
+    }
+    fixWidth();
+
+    // ensure Shoelace components are upgraded (if necessary)
+    window.addEventListener('shoelace-ready', ()=> {
+      // placeholder if we need to programmatically update sl components
+    });
+
+  </script>
 </body>
 </html>

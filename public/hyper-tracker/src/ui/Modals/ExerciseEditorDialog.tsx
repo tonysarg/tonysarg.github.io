@@ -149,7 +149,7 @@ export default function ExerciseEditorDialog({
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-soil/80 text-sand border-white/10 placeholder:text-slate-400"
+              className="bg-soil/80 text-sand border-white/10 placeholder:text-[rgb(var(--ink)/0.5)]"
             />
           </div>
 
@@ -163,7 +163,7 @@ export default function ExerciseEditorDialog({
                 value={sets}
                 onChange={(e) => setSets(e.target.value)}
                 placeholder="e.g., 3×8–10"
-                className="bg-soil/80 text-sand border-white/10 placeholder:text-slate-400"
+                className="bg-soil/80 text-sand border-white/10 placeholder:text-[rgb(var(--ink)/0.5)]"
               />
             </div>
             <div>
@@ -198,7 +198,7 @@ export default function ExerciseEditorDialog({
               value={tempo}
               onChange={(e) => setTempo(e.target.value)}
               placeholder="Lower 2s, pause 1s, lift 1s"
-              className="bg-soil/80 text-sand border-white/10 placeholder:text-slate-400"
+              className="bg-soil/80 text-sand border-white/10 placeholder:text-[rgb(var(--ink)/0.5)]"
             />
           </div>
 
@@ -211,10 +211,10 @@ export default function ExerciseEditorDialog({
               value={cue}
               onChange={(e) => setCue(e.target.value)}
               placeholder="Elbows tucked"
-              className="bg-soil/80 text-sand border-white/10 placeholder:text-slate-400"
+              className="bg-soil/80 text-sand border-white/10 placeholder:text-[rgb(var(--ink)/0.5)]"
             />
           </div>
-        <div className="text-xs text-slate-400">
+        <div className="text-xs text-subtle">
           {plan[dayIdx].title} · #{idx + 1}
         </div>
         </div>

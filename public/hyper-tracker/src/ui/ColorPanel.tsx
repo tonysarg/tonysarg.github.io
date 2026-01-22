@@ -5,7 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const VARS = [
-  { key: "--accent", label: "Accent (R G B)", def: "185 179 154" },
+  // Use --accent-rgb instead of --accent. --accent-rgb controls the RGB triplet
+  // for the warm golden accent defined in tokens.css. The default reflects the
+  // new unified accent hue.
+  { key: "--accent-rgb", label: "Accent (R G B)", def: "231 140 0" },
   { key: "--card", label: "Card (R G B)", def: "17 18 20" },
   { key: "--ink", label: "Ink (R G B)", def: "11 11 12" },
   { key: "--warn", label: "Warn (R G B)", def: "216 166 87" },
@@ -52,13 +55,13 @@ export default function ColorsDialog(){
         <div className="space-y-3">
           {VARS.map(v=>(
             <div key={v.key}>
-              <Label className="text-xs text-slate-300/80 mb-1 block">{v.label}</Label>
+              <Label className="text-xs text-subtle mb-1 block">{v.label}</Label>
               <Input className="font-mono" value={vals[v.key]||""}
                 onChange={(e)=>{
                   const map = { ...vals, [v.key]: e.target.value };
                   setVals(map); apply(map);
                 }} placeholder={v.def}/>
-              <div className="mt-1 text-xs text-slate-400">Example: <code>185 179 154</code></div>
+              <div className="mt-1 text-xs text-subtle">Example: <code>231&nbsp;140&nbsp;0</code></div>
             </div>
           ))}
         </div>

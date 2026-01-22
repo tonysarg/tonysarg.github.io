@@ -167,22 +167,22 @@ export default function ExerciseCard({
     : 0;
 
   return (
-    <div className="glass rounded-card p-4 transition-colors current-ex" data-rest-active={restOwner === ex.id}>
+    <div className="transition-colors current-ex" data-rest-active={restOwner === ex.id}>
       {/* Header */}
       <div className="flex items-center justify-between gap-3">
         <div>
           <div className="text-xl font-semibold mb-1">{ex.name}</div>
-          <div className="text-sm text-slate-300/80 mb-2">
+          <div className="text-sm text-subtle mb-2">
             {ex.sets || ""} {ex.tempo ? `· ${ex.tempo}` : ""} {ex.cue ? `· Cue: ${ex.cue}` : ""}
           </div>
           {totalSets > 0 && (
             <div className="text-sm mb-2">
-              <span className="pill bg-[rgb(var(--accent))/0.2] text-[rgb(var(--accent))]">{nextLabel}</span>
+              <span className="pill bg-[rgb(var(--accent-rgb))/0.2] text-[rgb(var(--accent-rgb))]">{nextLabel}</span>
             </div>
           )}
         </div>
         <div className="text-right">
-          <label className="text-xs text-slate-300/80 block mb-1">Rest (sec)</label>
+          <label className="text-xs text-subtle block mb-1">Rest (sec)</label>
           <input
             className="input w-28 text-right"
             type="number"
@@ -235,7 +235,7 @@ export default function ExerciseCard({
               return (
                 <button
                   key={s}
-                  className={`btn ${done ? "btn-solid" : "btn-ghost"} ${isNext ? "ring-2 ring-[rgb(var(--accent))]" : ""}`}
+                  className={`btn ${done ? "btn-solid" : "btn-ghost"} ${isNext ? "ring-2 ring-[rgb(var(--accent-rgb))]" : ""}`}
                   onClick={() => markSetDone(s)}
                 >
                   Set {s + 1}
@@ -257,7 +257,7 @@ export default function ExerciseCard({
       {/* notes/weight/reps */}
       <div className="grid md:grid-cols-2 gap-3">
         <div>
-          <label className="text-xs text-slate-300/80 block mb-1">Notes</label>
+          <label className="text-xs text-subtle block mb-1">Notes</label>
           <textarea
             className="input h-28"
             placeholder="How did it feel? Cues that helped, etc."
@@ -271,7 +271,7 @@ export default function ExerciseCard({
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs text-slate-300/80 block mb-1">Weight</label>
+            <label className="text-xs text-subtle block mb-1">Weight</label>
             <input
               className="input"
               placeholder="e.g., 40 lb"
@@ -284,7 +284,7 @@ export default function ExerciseCard({
             />
           </div>
           <div>
-            <label className="text-xs text-slate-300/80 block mb-1">Reps</label>
+            <label className="text-xs text-subtle block mb-1">Reps</label>
             <input
               className="input"
               placeholder="target/actual"
@@ -302,7 +302,7 @@ export default function ExerciseCard({
       {/* video + calistree */}
       <div className="mt-3">
         <div className="flex items-center justify-between mb-1">
-          <label className="text-xs text-slate-300/80">
+          <label className="text-xs text-subtle">
             Technique (YouTube) —{" "}
             <a
               className="underline"

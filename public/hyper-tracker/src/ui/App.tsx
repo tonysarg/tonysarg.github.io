@@ -166,14 +166,14 @@ export default function App() {
           {/* Header */}
           <header className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[rgb(var(--accent))/0.2] flex items-center justify-center">
-                <i className="bx bx-dumbbell text-[color:rgb(var(--accent))] text-2xl leading-none" />
+              <div className="w-10 h-10 rounded-lg bg-[rgb(var(--accent-rgb))/0.2] flex items-center justify-center">
+                <i className="bx bx-dumbbell text-[rgb(var(--accent-rgb))] text-2xl leading-none" />
               </div>
               <div>
                 <h1 className="text-xl md:text-2xl font-semibold">
                   Hypertrophy Workout Tracker
                 </h1>
-                <p className="text-sm text-slate-300/80">
+                <p className="text-sm text-subtle">
                   Space = complete set. Rest: next set ring yellow → green when ready.
                 </p>
               </div>
@@ -210,7 +210,7 @@ export default function App() {
                     key={d.dayKey}
                     className={`btn text-left ${
                       active
-                        ? "btn-solid border-[rgb(var(--accent))]"
+                        ? "btn-solid border-[rgb(var(--accent-rgb))]"
                         : "btn-ghost hover:bg-white/10"
                     }`}
                     title={d.title}
@@ -234,7 +234,7 @@ export default function App() {
             <aside className="glass rounded-card p-4 shadow-soft">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-lg font-semibold">Exercises</h2>
-                <span className="text-sm text-slate-300/80">
+                <span className="text-sm text-subtle">
                   {plan[dayIdx]?.title ?? ""}
                 </span>
                 <button

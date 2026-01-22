@@ -1,6 +1,7 @@
 .glass.rounded-card.current-ex {
   position: relative;
   overflow: visible;
+  border-radius: calc(var(--radius) * 0.9);
 }
 
 .glass.rounded-card.current-ex svg.border-glow {
@@ -28,7 +29,12 @@
   stroke-dashoffset: 0;
   animation: glowRun 6s linear infinite;
 
-  filter: drop-shadow(0 0 6px #f77205) drop-shadow(0 0 10px #f77205);
+  /* Use the accent RGB for the glow effect instead of a hard-coded orange.
+     The rgb() function picks up the current accent-rgb triplet defined in tokens. */
+  filter: drop-shadow(0 0 6px rgb(var(--accent-rgb))) drop-shadow(0 0 10px rgb(var(--accent-rgb)));
+
+  /* Also set the stroke colour of the path to the accent so it matches the glow. */
+  stroke: rgb(var(--accent-rgb));
 }
 
 @keyframes glowRun {
