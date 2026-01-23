@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useStore } from "@/store/useStore";
+import { useStore, Day, ProgEntry } from "@/store/useStore";
 import {
   Dialog,
   DialogContent,
@@ -7,16 +7,15 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-  DialogOverlay,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 type FullState = {
-  plan: any;
-  progress?: any;
-  restOverrides?: any;
+  plan: Day[];
+  progress?: Record<string, Record<string, ProgEntry>>;
+  restOverrides?: Record<string, Record<string, number>>;
   muted?: boolean;
   _schema?: "full-state-v1";
 };
@@ -60,36 +59,34 @@ export default function PlanJsonDialog() {
       const j = await r.json();
       setText(JSON.stringify(j, null, 2));
       toast.success("Reloaded plan.json");
-    } catch (e) {
+    } catch {
       toast.error("Failed to load plan.json");
     }
   }
 
   function applyFromText() {
     try {
-      const parsed = JSON.parse(text) as FullState | { plan: any[] };
+      const parsed = JSON.parse(text) as FullState;
 
       // Accept both full-state and legacy { plan } only
       if (!parsed || !("plan" in parsed)) throw new Error("Invalid JSON shape");
 
-      setPlan((parsed as any).plan);
+      setPlan(parsed.plan);
 
-      if ("progress" in parsed && (parsed as any).progress) {
-        replaceProgress((parsed as any).progress);
+      if (parsed.progress) {
+        replaceProgress(parsed.progress);
       }
-      if ("restOverrides" in parsed && (parsed as any).restOverrides) {
-        replaceRestOverrides((parsed as any).restOverrides);
+      if (parsed.restOverrides) {
+        replaceRestOverrides(parsed.restOverrides);
       }
-      if ("muted" in parsed && typeof (parsed as any).muted === "boolean") {
-        setMuted((parsed as any).muted);
+      if (typeof parsed.muted === "boolean") {
+        setMuted(parsed.muted);
       }
 
       setOpen(false);
       toast.success(
         "Applied " +
-          (parsed && (parsed as FullState)._schema === "full-state-v1"
-            ? "full state"
-            : "plan")
+          (parsed._schema === "full-state-v1" ? "full state" : "plan")
       );
     } catch {
       toast.error(
@@ -112,8 +109,6 @@ export default function PlanJsonDialog() {
           Plan JSON
         </button>
       </DialogTrigger>
-
-      <DialogOverlay className="bg-ink/98" />
 
       <DialogContent className="sm:max-w-3xl glass rounded-card text-sand shadow-soft border border-white/10">
         <DialogHeader>

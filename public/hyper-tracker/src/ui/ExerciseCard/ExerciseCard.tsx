@@ -1,9 +1,11 @@
 import { useEffect, useMemo } from "react";
 import { useStore } from "@/store/useStore";
-import { parseSets, setCountFromString, setStringWithCount } from "@/utils/sets";
+import { parseSets } from "@/utils/sets";
 import { ytEmbedUrl, calistreeQueryFromName } from "@/utils/video";
 import { useRestTimer } from "@/hooks/useRestTimer";
 import { Progress } from "@/components/ui/progress";
+import HistoryDialog from "@/ui/Modals/HistoryDialog";
+import { toast } from "sonner";
 
 const REST_DEFAULTS: Record<string, number> = {
   Strength: 120,
@@ -31,13 +33,12 @@ export default function ExerciseCard({
   const restOwner = useStore((s) => s.restOwner);
 
   const day = plan[dayIdx];
-  if (!day) return null;
-  const ex = day.blocks[exIdx];
-  if (!ex) return null;
+  const ex = day?.blocks[exIdx];
+  const dk = day?.dayKey ?? "";
+  const exId = ex?.id ?? "";
 
-  const dk = day.dayKey;
   const prog =
-    progress[dk]?.[ex.id] ?? {
+    (dk && exId && progress[dk]?.[exId]) || {
       sets: {},
       notes: "",
       video: "",
@@ -46,8 +47,8 @@ export default function ExerciseCard({
       history: [],
     };
 
-  const totalSets = parseSets(ex.sets);
-  const override = restOverrides[dk]?.[ex.id] ?? (REST_DEFAULTS[ex.focus] || 90);
+  const totalSets = parseSets(ex?.sets);
+  const override = (dk && exId && restOverrides[dk]?.[exId]) ?? (REST_DEFAULTS[ex?.focus ?? ""] || 90);
 
   const nextIdx = useMemo(() => {
     for (let i = 0; i < totalSets; i++) {
@@ -63,7 +64,7 @@ export default function ExerciseCard({
       if (!muted) bell();
       autoStartNext();
     },
-    ex.id
+    exId
   );
 
   useEffect(() => {
@@ -71,74 +72,33 @@ export default function ExerciseCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [override]);
 
-  function bell() {
-    try {
-      const Ctx = (window.AudioContext || (window as any).webkitAudioContext) as typeof AudioContext;
-      const ctx = new Ctx();
-      const now = ctx.currentTime;
-      const seq = [
-        { f: 780, d: 0.12 },
-        { f: 1040, d: 0.16 },
-      ];
-      let t = now;
-      seq.forEach((s) => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = "sine";
-        o.frequency.value = s.f;
-        g.gain.setValueAtTime(0.06, t);
-        o.connect(g);
-        g.connect(ctx.destination);
-        o.start(t);
-        o.stop(t + s.d);
-        t += s.d + 0.02;
-      });
-    } catch {}
-  }
-
-  function autoStartNext() {
-    if (nextIdx >= 0) return;
-    if (exIdx < day.blocks.length - 1) onNext();
-  }
-
-  function markSetDone(i: number) {
-    if (i < 0) return;
-    if (prog.sets[i]) {
-      if (confirm("Reset this set?")) {
-        setProgress(dk, ex.id, (p) => {
-          delete p.sets[i];
-        });
-      }
-      return;
-    }
-    setProgress(dk, ex.id, (p) => {
-      p.sets[i] = true;
-      if ((p.weight && p.weight.trim()) || (p.reps && p.reps.trim())) {
-        p.history.unshift({
-          ts: Date.now(),
-          weight: p.weight || "",
-          reps: p.reps || "",
-        });
-        p.history = p.history.slice(0, 20);
-      }
-    });
-    timer.start();
-  }
-
-  function adjustSets(delta: number) {
-    const n = Math.max(0, setCountFromString(ex.sets) + delta);
-    plan[dayIdx].blocks[exIdx].sets = setStringWithCount(ex.sets, n);
-    setProgress(dk, ex.id, (p) => {
-      Object.keys(p.sets).forEach((k) => {
-        if (+k >= n) delete p.sets[+k];
-      });
-    });
-  }
-
   // 🔑 LISTEN FOR GLOBAL HOTKEY EVENTS DISPATCHED BY <App/>
   useEffect(() => {
+    if (!day || !ex) return;
+
     const onCompleteNext = () => {
-      if (nextIdx >= 0) markSetDone(nextIdx);
+      if (nextIdx >= 0) {
+        // Mark set done inline to avoid stale closure issues
+        if (prog.sets[nextIdx]) return;
+        setProgress(dk, exId, (p) => {
+          p.sets[nextIdx] = true;
+          if ((p.weight && p.weight.trim()) || (p.reps && p.reps.trim())) {
+            p.history.unshift({
+              ts: Date.now(),
+              weight: p.weight || "",
+              reps: p.reps || "",
+            });
+            p.history = p.history.slice(0, 20);
+          }
+        });
+        const newCompleted = Object.values(prog.sets).filter(Boolean).length + 1;
+        if (newCompleted === totalSets) {
+          toast.success(`${ex.name} complete! Great work!`);
+        } else {
+          toast.success(`Set ${nextIdx + 1} done! Rest ${override}s`, { duration: 2000 });
+        }
+        timer.start();
+      }
     };
     const onSkip = () => {
       if (timer.active) timer.stop();
@@ -158,33 +118,112 @@ export default function ExerciseCard({
       document.removeEventListener("ec-plus", onPlus as EventListener);
       document.removeEventListener("ec-minus", onMinus as EventListener);
     };
-  }, [nextIdx, onNext, timer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextIdx, onNext, timer, day, ex, dk, exId, prog, totalSets, override, setProgress]);
+
+  // Early return AFTER all hooks
+  if (!day || !ex) return null;
+
+  function bell() {
+    try {
+      const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const ctx = new Ctx();
+      const now = ctx.currentTime;
+      const seq = [
+        { f: 780, d: 0.12 },
+        { f: 1040, d: 0.16 },
+      ];
+      let t = now;
+      seq.forEach((s) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.value = s.f;
+        g.gain.setValueAtTime(0.06, t);
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start(t);
+        o.stop(t + s.d);
+        t += s.d + 0.02;
+      });
+    } catch {
+      // Audio not available
+    }
+  }
+
+  function autoStartNext() {
+    if (nextIdx >= 0) return;
+    if (exIdx < day.blocks.length - 1) onNext();
+  }
+
+  function markSetDone(i: number) {
+    if (i < 0) return;
+    if (prog.sets[i]) {
+      if (confirm("Reset this set?")) {
+        setProgress(dk, ex.id, (p) => {
+          delete p.sets[i];
+        });
+        toast.info(`Set ${i + 1} reset`);
+      }
+      return;
+    }
+    setProgress(dk, ex.id, (p) => {
+      p.sets[i] = true;
+      if ((p.weight && p.weight.trim()) || (p.reps && p.reps.trim())) {
+        p.history.unshift({
+          ts: Date.now(),
+          weight: p.weight || "",
+          reps: p.reps || "",
+        });
+        p.history = p.history.slice(0, 20);
+      }
+    });
+
+    // Show completion feedback
+    const newCompleted = Object.values(prog.sets).filter(Boolean).length + 1;
+    if (newCompleted === totalSets) {
+      toast.success(`${ex.name} complete! Great work!`);
+    } else {
+      toast.success(`Set ${i + 1} done! Rest ${override}s`, { duration: 2000 });
+    }
+
+    timer.start();
+  }
 
   const embed = ytEmbedUrl(prog.video);
-  const nextLabel = nextIdx >= 0 ? `Next: Set ${nextIdx + 1} of ${totalSets}` : "All sets complete";
   const pct = timer.active
     ? Math.max(0, Math.min(100, 100 * (1 - timer.rem / Math.max(1, timer.total))))
     : 0;
 
+  const completedSets = Object.values(prog.sets).filter(Boolean).length;
+  const progressPercent = totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
+
   return (
     <div className="transition-colors current-ex" data-rest-active={restOwner === ex.id}>
       {/* Header */}
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <div className="text-xl font-semibold mb-1">{ex.name}</div>
-          <div className="text-sm text-subtle mb-2">
-            {ex.sets || ""} {ex.tempo ? `· ${ex.tempo}` : ""} {ex.cue ? `· Cue: ${ex.cue}` : ""}
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="text-lg sm:text-xl font-semibold mb-1 break-words">{ex.name}</div>
+          <div className="text-sm text-subtle mb-2 break-words">
+            {ex.sets || ""} {ex.tempo ? `· ${ex.tempo}` : ""} {ex.cue ? `· ${ex.cue}` : ""}
           </div>
           {totalSets > 0 && (
-            <div className="text-sm mb-2">
-              <span className="pill bg-[rgb(var(--accent-rgb))/0.2] text-[rgb(var(--accent-rgb))]">{nextLabel}</span>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="pill bg-[rgb(var(--accent-rgb))/0.2] text-[rgb(var(--accent-rgb))]">
+                {nextIdx >= 0 ? `Set ${nextIdx + 1}/${totalSets}` : "Complete!"}
+              </span>
+              {completedSets > 0 && totalSets > 0 && (
+                <span className="text-xs text-subtle">
+                  {Math.round(progressPercent)}% done
+                </span>
+              )}
             </div>
           )}
         </div>
-        <div className="text-right">
-          <label className="text-xs text-subtle block mb-1">Rest (sec)</label>
+        <div className="flex items-center gap-3 sm:flex-col sm:items-end">
+          <label className="text-xs text-subtle">Rest</label>
           <input
-            className="input w-28 text-right"
+            className="input w-20 sm:w-24 text-center"
             type="number"
             min={10}
             step={5}
@@ -272,16 +311,61 @@ export default function ExerciseCard({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-xs text-subtle block mb-1">Weight</label>
-            <input
-              className="input"
-              placeholder="e.g., 40 lb"
-              value={prog.weight}
-              onChange={(e) =>
-                setProgress(dk, ex.id, (p) => {
-                  p.weight = e.target.value;
-                })
-              }
-            />
+            <div className="relative">
+              <input
+                className="input pr-20"
+                placeholder="e.g., 40 lb"
+                value={prog.weight}
+                onChange={(e) =>
+                  setProgress(dk, ex.id, (p) => {
+                    p.weight = e.target.value;
+                  })
+                }
+              />
+              {/* Quick increment buttons */}
+              <div className="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5">
+                <button
+                  type="button"
+                  className="w-7 h-7 rounded bg-white/10 hover:bg-white/20 text-sm transition-colors"
+                  title="-5"
+                  onClick={() => {
+                    const num = parseFloat(prog.weight) || 0;
+                    setProgress(dk, ex.id, (p) => {
+                      p.weight = String(Math.max(0, num - 5));
+                    });
+                  }}
+                >
+                  -5
+                </button>
+                <button
+                  type="button"
+                  className="w-7 h-7 rounded bg-white/10 hover:bg-white/20 text-sm transition-colors"
+                  title="+5"
+                  onClick={() => {
+                    const num = parseFloat(prog.weight) || 0;
+                    setProgress(dk, ex.id, (p) => {
+                      p.weight = String(num + 5);
+                    });
+                  }}
+                >
+                  +5
+                </button>
+              </div>
+            </div>
+            {/* Last weight suggestion */}
+            {prog.history?.[0]?.weight && !prog.weight && (
+              <button
+                type="button"
+                className="text-xs text-[rgb(var(--accent-rgb))] hover:underline mt-1"
+                onClick={() => {
+                  setProgress(dk, ex.id, (p) => {
+                    p.weight = prog.history[0].weight;
+                  });
+                }}
+              >
+                Last: {prog.history[0].weight}
+              </button>
+            )}
           </div>
           <div>
             <label className="text-xs text-subtle block mb-1">Reps</label>
@@ -295,6 +379,20 @@ export default function ExerciseCard({
                 })
               }
             />
+            {/* Last reps suggestion */}
+            {prog.history?.[0]?.reps && !prog.reps && (
+              <button
+                type="button"
+                className="text-xs text-[rgb(var(--accent-rgb))] hover:underline mt-1"
+                onClick={() => {
+                  setProgress(dk, ex.id, (p) => {
+                    p.reps = prog.history[0].reps;
+                  });
+                }}
+              >
+                Last: {prog.history[0].reps}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -358,26 +456,48 @@ export default function ExerciseCard({
 
       {/* rest bar + controls */}
       <div className="mt-4">
-        <Progress value={pct} className={`h-2 ${timer.active ? "bg-[rgb(var(--warn))/20]" : ""}`} />
-        <div className="flex items-center justify-between mt-2">
-          <div>
-            Rest: <span>{timer.active ? `${timer.rem}s` : "—"}</span>{" "}
+        <Progress value={pct} className={`h-3 ${timer.active ? "bg-[rgb(var(--warn))/20]" : ""}`} />
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mt-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm">Rest:</span>
+            <span className={`font-mono text-lg ${timer.active && timer.rem <= 10 ? "text-[rgb(var(--warn))]" : ""}`}>
+              {timer.active ? `${timer.rem}s` : "—"}
+            </span>
             {timer.active && (
-              <span className="pill bg-[rgb(var(--warn))/0.2] text-[rgb(var(--warn))] ml-2">REST</span>
+              <span className="pill py-1 px-2 text-xs bg-[rgb(var(--warn))/0.2] text-[rgb(var(--warn))]">
+                {timer.paused ? "PAUSED" : "REST"}
+              </span>
             )}
           </div>
-          <div className="flex items-center gap-2">
-            <button className="btn btn-ghost" title="-15s" onClick={() => timer.add(-15)}>
+          <div className="flex items-center gap-1">
+            <button
+              className="btn btn-ghost px-2"
+              title="-15s"
+              onClick={() => timer.add(-15)}
+              disabled={!timer.active}
+            >
               <i className="bx bx-minus" />
-            </button>
-            <button className="btn btn-ghost" title="Pause/Resume" onClick={() => timer.toggle()}>
-              <i className={`bx ${timer.paused ? "bx-play" : "bx-pause"}`} />
-            </button>
-            <button className="btn btn-ghost" title="+15s" onClick={() => timer.add(15)}>
-              <i className="bx bx-plus" />
+              <span className="text-xs ml-1 hidden sm:inline">15s</span>
             </button>
             <button
-              className="btn btn-ghost"
+              className="btn btn-ghost px-2"
+              title="Pause/Resume"
+              onClick={() => timer.toggle()}
+              disabled={!timer.active}
+            >
+              <i className={`bx ${timer.paused ? "bx-play" : "bx-pause"}`} />
+            </button>
+            <button
+              className="btn btn-ghost px-2"
+              title="+15s"
+              onClick={() => timer.add(15)}
+              disabled={!timer.active}
+            >
+              <i className="bx bx-plus" />
+              <span className="text-xs ml-1 hidden sm:inline">15s</span>
+            </button>
+            <button
+              className="btn btn-ghost px-2"
               title="Skip (S)"
               onClick={() => {
                 if (timer.active) timer.stop();
@@ -392,26 +512,7 @@ export default function ExerciseCard({
 
       {/* history */}
       <div className="mt-2">
-        <button
-          className="btn btn-ghost"
-          onClick={() => {
-            if (!prog.history?.length) {
-              alert("No history yet. Enter weight/reps then complete a set.");
-              return;
-            }
-            const lines = prog.history
-              .slice(0, 10)
-              .map(
-                (en) =>
-                  `${new Date(en.ts).toLocaleDateString()} ${new Date(en.ts).toLocaleTimeString()} — ${en.weight} × ${en.reps}`
-              )
-              .join("\n");
-            alert(lines);
-          }}
-        >
-          <i className="bx bx-time-five mr-1" />
-          History
-        </button>
+        <HistoryDialog exerciseName={ex.name} history={prog.history || []} />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import type { Day, Exercise } from "@/store/useStore";
 type SeedExercise = Omit<Exercise, "id">;
 type SeedDay = Omit<Day, "blocks"> & {
   blocks: SeedExercise[];
+  notes?: string;
 };
 
 const RAW_SEED_PLAN: SeedDay[] = [

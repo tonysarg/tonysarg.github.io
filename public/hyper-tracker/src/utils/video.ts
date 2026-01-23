@@ -1,4 +1,4 @@
-export function ytIdFromUrl(u?:string){
+export function ytIdFromUrl(u?: string): string {
   if (!u) return "";
   try {
     const url = new URL(u);
@@ -6,7 +6,9 @@ export function ytIdFromUrl(u?:string){
     if (url.searchParams.get("v")) return url.searchParams.get("v")!;
     if (url.pathname.includes("/shorts/")) return url.pathname.split("/shorts/")[1].split("/")[0];
     if (url.pathname.includes("/embed/")) return url.pathname.split("/embed/")[1].split("/")[0];
-  } catch {}
+  } catch {
+    // Invalid URL - return empty string
+  }
   return "";
 }
 export function ytEmbedUrl(u?:string){ const id = ytIdFromUrl(u); return id ? `https://www.youtube.com/embed/${id}` : ""; }

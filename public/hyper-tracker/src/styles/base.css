@@ -5,6 +5,7 @@
     background: rgb(var(--ink));
     color: #ecece7;
     font-family: var(--font-standard);
+    -webkit-tap-highlight-color: transparent;
   }
 
   h1,h2,h3,h4,h5,h6 {
@@ -14,6 +15,11 @@
 
   .text-xs {
     font-family: var(--font-mono);
+  }
+
+  /* Prevent iOS zoom on input focus */
+  input, select, textarea {
+    font-size: 16px;
   }
 }
 
@@ -35,11 +41,16 @@
   }
 
   .pill {
-    @apply rounded-sm px-3 py-2 whitespace-nowrap;
+    @apply rounded-sm px-3 py-2 whitespace-nowrap text-sm;
   }
 
   .btn {
-    @apply rounded-md px-3 py-2 cursor-pointer;
+    @apply rounded-md px-3 py-2 cursor-pointer transition-all duration-150;
+    @apply active:scale-95 touch-manipulation;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   /* Solid buttons fill with the accent colour, ensuring high
@@ -47,28 +58,111 @@
      accent colour, while the text switches to ink for readability. */
   .btn-solid {
     @apply bg-[rgb(var(--accent-rgb))] text-[rgb(var(--ink))] border-[rgb(var(--accent-rgb))];
+    @apply hover:brightness-110;
   }
 
   .btn-ghost {
     @apply bg-white/5 border-white/20;
+    @apply hover:bg-white/10;
   }
 
   .btn-danger {
     @apply bg-[rgba(214,90,90,0.12)] border-[rgba(214,90,90,0.4)] text-white;
+    @apply hover:bg-[rgba(214,90,90,0.2)];
   }
 
   .input {
-    @apply w-full rounded-sm px-2 py-2 bg-white/5 border border-white/20;
+    @apply w-full rounded-sm px-3 py-2.5 bg-white/5 border border-white/20;
+    @apply transition-colors duration-150;
+    min-height: 44px;
   }
 
   .input:focus {
     outline: 2px solid rgb(var(--accent-rgb));
     outline-offset: 1px;
   }
+
+  .input:hover:not(:focus) {
+    @apply bg-white/8;
+  }
+
   /* Subtle text helper for muted paragraphs and labels.
      Uses the ink RGB triplet with a reduced opacity to produce
      a low-contrast tone similar to slate colours. */
   .text-subtle {
     color: rgb(var(--white) / 0.6);
+  }
+
+  /* Mobile-friendly scrollable areas */
+  .scrollable {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Safe area insets for notched devices */
+  .app-shell {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  /* Rest active state - subtle pulsing background */
+  .app-shell.rest-on {
+    animation: restPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes restPulse {
+    0%, 100% {
+      background-color: rgb(var(--ink));
+    }
+    50% {
+      background-color: rgb(var(--ink) / 0.95);
+    }
+  }
+
+  /* Exercise card completion animation */
+  .current-ex[data-rest-active="true"] {
+    animation: setComplete 0.3s ease-out;
+  }
+
+  @keyframes setComplete {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Focus ring for accessibility */
+  .btn:focus-visible, .input:focus-visible {
+    outline: 2px solid rgb(var(--accent-rgb));
+    outline-offset: 2px;
+  }
+
+  /* Smooth page transitions */
+  .app-shell {
+    transition: background-color 0.3s ease;
+  }
+
+  /* Day tabs smooth transition */
+  .btn {
+    transition: all 0.15s ease;
+  }
+
+  /* Exercise list item hover effect */
+  .glass.rounded-md {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .glass.rounded-md:hover:not(:has(.drag-handle:active)) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
+  }
+
+  /* Progress bar smooth fill */
+  [role="progressbar"] > div {
+    transition: width 0.25s ease-out !important;
   }
 }

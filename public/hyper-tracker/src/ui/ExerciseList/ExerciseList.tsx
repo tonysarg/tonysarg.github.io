@@ -1,4 +1,3 @@
-// src/components/ExerciseList/ExerciseList.tsx
 import { useMemo, useState } from "react";
 import {
   DndContext,
@@ -15,7 +14,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { createPortal } from "react-dom";
 
-import { useStore } from "@/store/useStore";
+import { useStore, Exercise } from "@/store/useStore";
 import { parseSets } from "@/utils/sets";
 
 // ------------------ main list ------------------
@@ -31,10 +30,24 @@ export default function ExerciseList({
 }) {
   const plan = useStore((s) => s.plan);
   const reorder = useStore((s) => s.reorderBlock);
+  const [filter, setFilter] = useState("");
+
+  const blocks = plan[dayIdx]?.blocks ?? [];
   const ids = useMemo(
-    () => plan[dayIdx]?.blocks.map((_, i) => i) ?? [],
-    [plan, dayIdx]
+    () => blocks.map((_, i) => i),
+    [blocks]
   );
+
+  // Filter exercises by name
+  const filteredIds = useMemo(() => {
+    if (!filter.trim()) return ids;
+    const q = filter.toLowerCase();
+    return ids.filter((i) => {
+      const ex = blocks[i];
+      return ex?.name?.toLowerCase().includes(q) ||
+             ex?.focus?.toLowerCase().includes(q);
+    });
+  }, [ids, filter, blocks]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -42,48 +55,79 @@ export default function ExerciseList({
   const [activeId, setActiveId] = useState<number | null>(null);
 
   return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={(e) => {
-        setActiveId(e.active.id as number);
-        document.body.setAttribute("data-dnd-dragging", "true");
-      }}
-      onDragEnd={({ active, over }) => {
-        setActiveId(null);
-        document.body.removeAttribute("data-dnd-dragging");
-        if (!over) return;
-        const from = active.id as number,
-          to = over.id as number;
-        if (from !== to) reorder(dayIdx, from, to);
-      }}
-      onDragCancel={() => {
-        setActiveId(null);
-        document.body.removeAttribute("data-dnd-dragging");
-      }}
-    >
-      <SortableContext items={ids} strategy={verticalListSortingStrategy}>
-        <div className="space-y-2">
-          {ids.map((i) => (
-            <Row
-              key={i}
-              id={i}
-              dayIdx={dayIdx}
-              active={i === activeIdx}
-              onClick={() => onSelect(i)}
-            />
-          ))}
+    <div className="space-y-3">
+      {/* Search/filter input */}
+      {blocks.length > 3 && (
+        <div className="relative">
+          <i className="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-subtle" />
+          <input
+            type="text"
+            placeholder="Filter exercises..."
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="input pl-9 pr-8 py-2 text-sm w-full"
+          />
+          {filter && (
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-subtle hover:text-sand"
+              onClick={() => setFilter("")}
+            >
+              <i className="bx bx-x" />
+            </button>
+          )}
         </div>
-      </SortableContext>
-
-      {createPortal(
-        <DragOverlay dropAnimation={null}>
-          {activeId != null ? (
-            <RowGhost id={activeId} dayIdx={dayIdx} />
-          ) : null}
-        </DragOverlay>,
-        document.body
       )}
-    </DndContext>
+
+      {filteredIds.length === 0 && filter ? (
+        <div className="text-sm text-subtle text-center py-4">
+          No exercises matching "{filter}"
+        </div>
+      ) : (
+        <DndContext
+          sensors={sensors}
+          onDragStart={(e) => {
+            setActiveId(e.active.id as number);
+            document.body.setAttribute("data-dnd-dragging", "true");
+          }}
+          onDragEnd={({ active, over }) => {
+            setActiveId(null);
+            document.body.removeAttribute("data-dnd-dragging");
+            if (!over) return;
+            const from = active.id as number,
+              to = over.id as number;
+            if (from !== to) reorder(dayIdx, from, to);
+          }}
+          onDragCancel={() => {
+            setActiveId(null);
+            document.body.removeAttribute("data-dnd-dragging");
+          }}
+        >
+          <SortableContext items={filteredIds} strategy={verticalListSortingStrategy}>
+            <div className="space-y-2">
+              {filteredIds.map((i) => (
+                <Row
+                  key={i}
+                  id={i}
+                  dayIdx={dayIdx}
+                  active={i === activeIdx}
+                  onClick={() => onSelect(i)}
+                />
+              ))}
+            </div>
+          </SortableContext>
+
+          {createPortal(
+            <DragOverlay dropAnimation={null}>
+              {activeId != null ? (
+                <RowGhost id={activeId} dayIdx={dayIdx} />
+              ) : null}
+            </DragOverlay>,
+            document.body
+          )}
+        </DndContext>
+      )}
+    </div>
   );
 }
 
@@ -177,7 +221,7 @@ function RowInner({
   exIdx,
   ghost,
 }: {
-  ex: any;
+  ex: Exercise;
   doneCount: number;
   total: number;
   dayIdx: number;
