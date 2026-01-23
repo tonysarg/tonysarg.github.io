@@ -1,4 +1,4 @@
-import { onValue, set, Unsubscribe } from "firebase/database";
+import { onValue, set, get, Unsubscribe } from "firebase/database";
 import { configRef, isFirebaseConfigured } from "./firebase";
 import type { Day } from "@/store/useStore";
 
@@ -25,27 +25,20 @@ export async function loadFromFirebase(): Promise<GlobalConfig | null> {
     return null;
   }
 
-  return new Promise((resolve) => {
-    const unsubscribe = onValue(
-      configRef,
-      (snapshot) => {
-        unsubscribe();
-        const data = snapshot.val();
-        if (data) {
-          resolve({
-            ...defaultConfig,
-            ...data,
-          });
-        } else {
-          resolve(null);
-        }
-      },
-      (error) => {
-        console.error("Error loading from Firebase:", error);
-        resolve(null);
-      }
-    );
-  });
+  try {
+    const snapshot = await get(configRef);
+    const data = snapshot.val();
+    if (data) {
+      return {
+        ...defaultConfig,
+        ...data,
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error("Error loading from Firebase:", error);
+    return null;
+  }
 }
 
 // Save config to Firebase
