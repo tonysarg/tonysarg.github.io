@@ -5,7 +5,7 @@ import path from 'node:path'   // ✅ ESM-safe import
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // base: '/public/hyper-tracker/', // ← if you deploy there
+  base: '/hyper-tracker/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
