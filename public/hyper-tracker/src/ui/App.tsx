@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store/useStore";
 import { SEED_PLAN } from "@/data/seedPlan";
 import { toast } from "sonner";
+import { isFirebaseConfigured } from "@/lib/firebase";
+import { loadFromFirebase, subscribeToFirebase } from "@/lib/sync";
 import ExerciseList from "./ExerciseList/ExerciseList";
 import ExerciseCard from "./ExerciseCard/ExerciseCard";
 import PlanJsonDialog from "./Modals/PlanJsonDialog";
@@ -43,35 +45,69 @@ export default function App() {
   const setMuted = useStore((s) => s.setMuted);
   const replaceProgress = useStore((s) => s.replaceProgress);
   const replaceRestOverrides = useStore((s) => s.replaceRestOverrides);
+  const syncFromRemote = useStore((s) => s.syncFromRemote);
 
   const [mode, setMode] = useState<AppMode>("workout");
   const [restActive, setRestActive] = useState(false);
   const [dayIdx, setDayIdx] = useState(0);
   const [exIdx, setExIdx] = useState(0);
+  const [firebaseReady, setFirebaseReady] = useState(false);
 
-  // Load plan.json once if no plan yet
+  // Initialize data - Firebase takes priority, then plan.json, then seed
   useEffect(() => {
     (async () => {
-      if (plan.length) return;
-
-      try {
-        const url = new URL("plan.json", import.meta.env.BASE_URL).toString();
-        const r = await fetch(url, { cache: "no-store" });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const j = await r.json();
-
-        if (j && j.plan) setPlan(j.plan);
-        if (j && j.progress) replaceProgress(j.progress);
-        if (j && j.restOverrides) replaceRestOverrides(j.restOverrides);
-        if (j && typeof j.muted === "boolean") setMuted(j.muted);
-      } catch (err) {
-        console.error("Failed to load plan.json:", err);
-        toast.error("Failed to load plan.json; using seed");
-        setPlan(SEED_PLAN);
+      // If Firebase is configured, load from there
+      if (isFirebaseConfigured()) {
+        try {
+          const remoteData = await loadFromFirebase();
+          if (remoteData && remoteData.plan && remoteData.plan.length > 0) {
+            syncFromRemote(remoteData);
+            setFirebaseReady(true);
+            return;
+          }
+        } catch (err) {
+          console.error("Error loading from Firebase:", err);
+        }
       }
+
+      // If no Firebase or empty Firebase, fall back to plan.json or seed
+      if (plan.length === 0) {
+        try {
+          const url = new URL("plan.json", import.meta.env.BASE_URL).toString();
+          const r = await fetch(url, { cache: "no-store" });
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          const j = await r.json();
+
+          if (j && j.plan) setPlan(j.plan, !isFirebaseConfigured());
+          if (j && j.progress) replaceProgress(j.progress);
+          if (j && j.restOverrides) replaceRestOverrides(j.restOverrides, !isFirebaseConfigured());
+          if (j && typeof j.muted === "boolean") setMuted(j.muted, !isFirebaseConfigured());
+        } catch (err) {
+          console.error("Failed to load plan.json:", err);
+          if (plan.length === 0) {
+            toast.error("Failed to load plan.json; using seed");
+            setPlan(SEED_PLAN, !isFirebaseConfigured());
+          }
+        }
+      }
+
+      setFirebaseReady(true);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plan.length]);
+  }, []);
+
+  // Subscribe to real-time Firebase updates
+  useEffect(() => {
+    if (!firebaseReady || !isFirebaseConfigured()) return;
+
+    const unsubscribe = subscribeToFirebase((data) => {
+      syncFromRemote(data);
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [firebaseReady, syncFromRemote]);
 
   // Keep indices in range if plan changes
   useEffect(() => {

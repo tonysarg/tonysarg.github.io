@@ -4,7 +4,6 @@ import { parseSets } from "@/utils/sets";
 import { ytEmbedUrl, calistreeQueryFromName } from "@/utils/video";
 import { useRestTimer } from "@/hooks/useRestTimer";
 import { Progress } from "@/components/ui/progress";
-import HistoryDialog from "@/ui/Modals/HistoryDialog";
 import { toast } from "sonner";
 
 const REST_DEFAULTS: Record<string, number> = {
@@ -44,7 +43,6 @@ export default function ExerciseCard({
       video: "",
       weight: "",
       reps: "",
-      history: [],
     };
 
   const totalSets = parseSets(ex?.sets);
@@ -82,14 +80,6 @@ export default function ExerciseCard({
         if (prog.sets[nextIdx]) return;
         setProgress(dk, exId, (p) => {
           p.sets[nextIdx] = true;
-          if ((p.weight && p.weight.trim()) || (p.reps && p.reps.trim())) {
-            p.history.unshift({
-              ts: Date.now(),
-              weight: p.weight || "",
-              reps: p.reps || "",
-            });
-            p.history = p.history.slice(0, 20);
-          }
         });
         const newCompleted = Object.values(prog.sets).filter(Boolean).length + 1;
         if (newCompleted === totalSets) {
@@ -169,14 +159,6 @@ export default function ExerciseCard({
     }
     setProgress(dk, ex.id, (p) => {
       p.sets[i] = true;
-      if ((p.weight && p.weight.trim()) || (p.reps && p.reps.trim())) {
-        p.history.unshift({
-          ts: Date.now(),
-          weight: p.weight || "",
-          reps: p.reps || "",
-        });
-        p.history = p.history.slice(0, 20);
-      }
     });
 
     // Show completion feedback
@@ -352,20 +334,6 @@ export default function ExerciseCard({
                 </button>
               </div>
             </div>
-            {/* Last weight suggestion */}
-            {prog.history?.[0]?.weight && !prog.weight && (
-              <button
-                type="button"
-                className="text-xs text-[rgb(var(--accent-rgb))] hover:underline mt-1"
-                onClick={() => {
-                  setProgress(dk, ex.id, (p) => {
-                    p.weight = prog.history[0].weight;
-                  });
-                }}
-              >
-                Last: {prog.history[0].weight}
-              </button>
-            )}
           </div>
           <div>
             <label className="text-xs text-subtle block mb-1">Reps</label>
@@ -379,20 +347,6 @@ export default function ExerciseCard({
                 })
               }
             />
-            {/* Last reps suggestion */}
-            {prog.history?.[0]?.reps && !prog.reps && (
-              <button
-                type="button"
-                className="text-xs text-[rgb(var(--accent-rgb))] hover:underline mt-1"
-                onClick={() => {
-                  setProgress(dk, ex.id, (p) => {
-                    p.reps = prog.history[0].reps;
-                  });
-                }}
-              >
-                Last: {prog.history[0].reps}
-              </button>
-            )}
           </div>
         </div>
       </div>
@@ -510,10 +464,6 @@ export default function ExerciseCard({
         </div>
       </div>
 
-      {/* history */}
-      <div className="mt-2">
-        <HistoryDialog exerciseName={ex.name} history={prog.history || []} />
-      </div>
     </div>
   );
 }

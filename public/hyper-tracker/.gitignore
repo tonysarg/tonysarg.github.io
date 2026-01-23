@@ -1,3 +1,8 @@
+# Environment variables (contains Firebase credentials)
+.env
+.env.local
+.env.*.local
+
 # Logs
 logs
 *.log
