@@ -55,7 +55,7 @@ ScrollTrigger.create({
   toggleClass: { className: 'nav--scrolled', targets: '.header__nav' }
 });
 
-// Dark theme for work, about, and signals sections
+// Dark theme for work and about sections
 ScrollTrigger.create({
   trigger: "#work",
   start: "top 60%",
@@ -76,90 +76,6 @@ window.addEventListener('resize', () => {
     ScrollTrigger.refresh();
   }, 250);
 });
-
-
-// SIGNALS - Draggable marquee (simple and smooth)
-const signalsContainer = document.querySelector('.signals__container');
-const signalsTrack = document.querySelector('.signals__track');
-
-if (signalsContainer && signalsTrack) {
-  let isDragging = false;
-  let startX = 0;
-  let scrollLeft = 0;
-
-  // Get current X position from transform matrix
-  const getTransformX = () => {
-    const style = window.getComputedStyle(signalsTrack);
-    const transform = style.transform;
-    if (transform === 'none') return 0;
-    // Works with both matrix() and matrix3d()
-    const match = transform.match(/matrix.*\((.+)\)/);
-    if (match) {
-      const values = match[1].split(', ');
-      return parseFloat(values[4]) || 0;
-    }
-    return 0;
-  };
-
-  const onPointerDown = (e) => {
-    isDragging = true;
-    signalsContainer.classList.add('is-dragging');
-
-    // Stop the CSS animation and grab current position
-    const currentX = getTransformX();
-    signalsTrack.style.animation = 'none';
-    signalsTrack.style.transform = `translateX(${currentX}px)`;
-
-    startX = e.type.includes('touch') ? e.touches[0].pageX : e.pageX;
-    scrollLeft = currentX;
-  };
-
-  const onPointerMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-
-    const x = e.type.includes('touch') ? e.touches[0].pageX : e.pageX;
-    const walk = x - startX;
-
-    signalsTrack.style.transform = `translateX(${scrollLeft + walk}px)`;
-  };
-
-  const onPointerUp = () => {
-    if (!isDragging) return;
-    isDragging = false;
-    signalsContainer.classList.remove('is-dragging');
-
-    // Get final position and track width
-    const currentX = getTransformX();
-    const halfWidth = signalsTrack.scrollWidth / 2;
-
-    // Normalize to loop range
-    let normalized = currentX % halfWidth;
-    if (normalized > 0) normalized -= halfWidth;
-
-    // Calculate animation offset as percentage
-    const percent = Math.abs(normalized) / halfWidth;
-    const duration = 90; // must match CSS
-
-    // Restart animation from current position
-    signalsTrack.style.transform = '';
-    signalsTrack.style.animation = `signalsScroll ${duration}s linear infinite`;
-    signalsTrack.style.animationDelay = `${-percent * duration}s`;
-  };
-
-  // Mouse
-  signalsContainer.addEventListener('mousedown', onPointerDown);
-  document.addEventListener('mousemove', onPointerMove);
-  document.addEventListener('mouseup', onPointerUp);
-
-  // Touch
-  signalsContainer.addEventListener('touchstart', onPointerDown, { passive: false });
-  document.addEventListener('touchmove', onPointerMove, { passive: false });
-  document.addEventListener('touchend', onPointerUp);
-
-  // Prevent native drag
-  signalsContainer.addEventListener('dragstart', e => e.preventDefault());
-}
 
 
 const hamburger = document.querySelector(".header__hamburger");
