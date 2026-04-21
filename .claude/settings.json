@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv fonts*Satoshi-Bold* fonts/Satoshi-Bold.woff)",
+      "Bash(mv fonts*Satoshi-Medium* fonts/Satoshi-Medium.woff)",
+      "Bash(mv fonts*Satoshi-Regular* fonts/Satoshi-Regular.woff)"
+    ]
+  }
+}
